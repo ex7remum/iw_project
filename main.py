@@ -2,20 +2,23 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_session import Session
 
 from processing import processing
+import pandas as pd
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
+
 # Чтение файлов с лекарствами
 def load_medicines(lang):
+    drugs_data = pd.read_csv('medicines.csv', sep=';')
     if lang == 'ru':
-        with open('medicines_ru.txt', encoding='utf-8') as f:
-            return [line.strip() for line in f.readlines()]
+        return drugs_data['Drug_name_rus'].values.tolist()
     else:
-        with open('medicines_en.txt', encoding='utf-8') as f:
-            return [line.strip() for line in f.readlines()]
+        return drugs_data['Drug_name_en'].values.tolist()
+
 
 # Стартовая страница
 @app.route('/', methods=['GET', 'POST'])
@@ -40,6 +43,7 @@ def index():
 
     return render_template('index.html', result=result, lang=session['lang'])
 
+
 # Маршрут для автозаполнения
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
@@ -47,6 +51,7 @@ def autocomplete():
     medicines = load_medicines(session['lang'])
     suggestions = [med for med in medicines if query.lower() in med.lower()]
     return jsonify(suggestions)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

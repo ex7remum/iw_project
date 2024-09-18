@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{ 'ru' if lang == 'ru' else 'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'Пример сайта на Python' if lang == 'ru' else 'Python Website Example' }}</title>
+
+    <!-- Подключение библиотеки jQuery для автодополнения -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script>
+        $(function() {
+            // Функция для получения последнего введенного слова
+            function extractLast(term) {
+                return term.split(',').pop().trim();
+            }
+
+            // Настройка автодополнения
+            $("#medicines").on("keydown", function(event) {
+                // Не запускать автодополнение при нажатии на enter, tab или запятую
+                if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
+                    event.preventDefault();
+                }
+            }).autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/autocomplete",
+                        data: {
+                            q: extractLast(request.term)
+                        },
+                        success: function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                search: function() {
+                    // Должно быть как минимум 2 символа для запуска автодополнения
+                    var term = extractLast(this.value);
+                    return term.length >= 2;
+                },
+                focus: function() {
+                    // Не вставляем значение в поле при фокусе
+                    return false;
+                },
+                select: function(event, ui) {
+                    var terms = this.value.split(',');
+                    // Убираем текущее вводимое слово
+                    terms.pop();
+                    // Добавляем выбранное из списка
+                    terms.push(ui.item.value);
+                    // Добавляем запятую в конец
+                    terms.push("");
+                    this.value = terms.join(", ");
+                    return false;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>{{ 'DocMeds' }}</h1>
+
+    <!-- Кнопка смены языка -->
+    <form method="POST">
+        <button name="lang_switch" type="submit">
+            {{ 'Сменить язык' if lang == 'en' else 'Switch Language' }}
+        </button>
+    </form>
+
+    <br>
+
+    <!-- Форма для ввода списка лекарств -->
+    <form method="POST">
+        <label for="medicines">{{ 'Введите лекарства через запятую:' if lang == 'ru' else 'Enter medicines separated by commas:' }}</label>
+        <input type="text" name="medicines" id="medicines" placeholder="{{ 'Введите лекарства' if lang == 'ru' else 'Enter medicines' }}" size="50">
+
+        <br><br>
+
+        <input type="submit" value="{{ 'Отправить' if lang == 'ru' else 'Submit' }}">
+    </form>
+
+    <h2>{{ 'Результат:' if lang == 'ru' else 'Result:' }}</h2>
+    <textarea rows="10" cols="50" readonly>{{ result }}</textarea>
+
+</body>
+</html>

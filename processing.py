@@ -23,14 +23,18 @@ class DrugInteractionProcessor:
         cleantext = re.sub(CLEANR, '', text)
         cleantext = re.sub('Therapeutic duplication warnings', 'Therapeutic duplication warnings. ', cleantext)
         return cleantext
+
     
     def parse_items_to_ids(self, medicine_list, lang):
         ids = []
         for drug in medicine_list:
-            if lang == 'en':
-                ids.append(self.drugs_data[self.drugs_data["Drug_name_en"] == drug]['Id'].iloc[0])
-            else:
-                ids.append(self.drugs_data[self.drugs_data["Drug_name_rus"] == drug]['Id'].iloc[0])
+            try:
+                if lang == 'en':
+                    ids.append(self.drugs_data[self.drugs_data["Drug_name_en"] == drug]['Id'].iloc[0])
+                else:
+                    ids.append(self.drugs_data[self.drugs_data["Drug_name_rus"] == drug]['Id'].iloc[0])
+            except IndexError:
+                print(f"Drug {drug} not found.")
         return ids
     
     @staticmethod
@@ -54,20 +58,25 @@ class DrugInteractionProcessor:
 
     @lru_cache(maxsize=1024)
     def get_info_from_drugs_com(self, id1, id2):
-        url = f'https://www.drugs.com/interactions-check.php?drug_list={id1},{id2}'
-        opener = urllib.request.FancyURLopener({})
-        f = opener.open(url)
-        content = f.read()
-        soup = BeautifulSoup(content, 'html.parser')
+        try:
+            url = f'https://www.drugs.com/interactions-check.php?drug_list={id1},{id2}'
+            opener = urllib.request.FancyURLopener({})
+            f = opener.open(url)
+            content = f.read()
+            soup = BeautifulSoup(content, 'html.parser')
 
-        interactions_list_info = soup.find_all('div', {"class": "interactions-reference-wrapper"})
+            interactions_list_info = soup.find_all('div', {"class": "interactions-reference-wrapper"})
 
-        # remove all inside <>
-        info = []
-        for interaction_info in interactions_list_info:
-            info.append(self.remove_html_tags(str(interaction_info)))
+            # remove all inside <>
+            info = []
+            for interaction_info in interactions_list_info:
+                info.append(self.remove_html_tags(str(interaction_info)))
 
-        return info
+            return info
+        except Exception as e:  # Перехват исключения и вывод ошибки
+            print(f"Error occurred: {e}")
+            return [f'Failed to process drugs']
+        
 
     def processing(self, medicine_list, lang):
         medicine_list = list(set(medicine_list))

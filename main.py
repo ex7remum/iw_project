@@ -5,7 +5,7 @@ from trie import Trie
 import pandas as pd
 import os
 from trie import TrieVisualizer
-
+from scout_apm.flask import ScoutApm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -84,6 +84,10 @@ def index():
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify([])
+    if 'lang' not in session:
+        session['lang'] = 'en'
     medicine_trie = Trie(session['lang'])
     # Get autocomplete suggestions from the trie
     suggestions = medicine_trie.autocomplete(query)
@@ -92,7 +96,10 @@ def autocomplete():
 
     return jsonify(suggestions)
 
-
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.config["SCOUT_MONITOR"] = True
+    #app.config["SCOUT_KEY"] = "[c1V7BzRYPDMnjYvn3aFF]" 
+    #app.config["SCOUT_NAME"] = "A FRIENDLY NAME FOR YOUR APP"
+    #ScoutApm(app)
+
+    app.run(debug=False)

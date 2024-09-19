@@ -1,5 +1,5 @@
 Drug_name_en;Id;Drug_name_rus
-Abemaciclib;3867-0;Aбемациклиб 
+Abemaciclib;3867-0;Aбемациклиб
 Abiraterone;3321-0;Абиратерон
 Acalabrutinib;3871-0;Акалабрутиниб
 Adagrasib;4419-0;Адаграсиб
@@ -9,21 +9,21 @@ Alectinib;3722-0;Алектиниб
 Alemtuzumab;115-0;Алемтузумаб
 Alpelisib;4016-0;Алпелисиб
 Altretamine;136-0;Алтретамин
-Aminolevulinic Acid;3812-0;Аминолевулиновая кислота
+Aminolevulinic_Acid;3812-0;Аминолевулиновая_кислота
 Amivantamab;4261-0;Амивантамаб
 Anastrozole;206-0;Анастрозол
 Apalutamide;3893-0;Апалутамид
-Arsenic Trioxide;236-0;Мышьяка триоксид
+Arsenic_Trioxide;236-0;Мышьяка_триоксид
 Asciminib;4307-0;Асциминиб
 Asparaginase;3367-0;Аспарагиназа
 Atezolizumab;3750-0;Атезолизумаб
 Avapritinib;4124-0;Авапритиниб
 Avelumab;3794-0;Авелумаб
-Axicabtagene Ciloleucel;3869-0;Аксикабтаген цилолейцел
+Axicabtagene_Ciloleucel;3869-0;Аксикабтаген_цилолейцел
 Axitinib;3364-0;Акситиниб
 Azacitidine;293-0;Азацитидин
-BCG Vaccine;3983-0;БЦЖ-вакцина
-Belantamab Mafodotin;4177-0;Белантамаб мафодотин
+BCG_Vaccine;3983-0;БЦЖ-вакцина
+Belantamab_Mafodotin;4177-0;Белантамаб_мафодотин
 Belinostat;3543-0;Белиностат
 Belzutifan;4289-0;Белзутифан
 Bendamustine;2823-0;Бендамустин
@@ -35,12 +35,12 @@ Bleomycin;398-0;Блеомицин
 Blinatumomab;3578-0;Блинатумомаб
 Bortezomib;402-0;Бортезомиб
 Bosutinib;3416-0;Бозутиниб
-Brexucabtagene Autoleucel;4169-0;Брексукабтаген аутолейсел
+Brexucabtagene_Autoleucel;4169-0;Брексукабтаген_аутолейсел
 Brigatinib;3806-0;Бригатиниб
 Busulfan;442-0;Бусульфан
 Cabazitaxel;3241-0;Кабазитаксел
 Cabozantinib;3430-0;Кабозантиниб
-Calaspargase Pegol;3986-0;Каласпаргаза пегол
+Calaspargase_Pegol;3986-0;Каласпаргаза_пегол
 Capecitabine;490-0;Капецитабин
 Capivasertib;4565-0;Капивасертиб
 Capmatinib;4150-0;Капматиниб
@@ -51,7 +51,7 @@ Cemiplimab;3964-0;Цемиплимаб
 Ceritinib;3527-0;Церитиниб
 Cetuximab;572-0;Цетуксимаб
 Chlorambucil;578-0;Хлорамбуцил
-Ciltacabtagene Autoleucel;4345-0;Цилтакабтаген аутолейцел
+Ciltacabtagene_Autoleucel;4345-0;Цилтакабтаген_аутолейцел
 Cisplatin;678-0;Цисплатин
 Cladribine;684-0;Кладрибин
 Clofarabine;698-0;Клофарабин
@@ -70,7 +70,7 @@ Dasatinib;787-0;Дазатиниб
 Daunorubicin;788-0;Даунорубицин
 Decitabine;790-0;Децитабин
 Degarelix;3102-0;Дегареликс
-Denileukin Diftitox;797-0;Денилейкин дифтитокс
+Denileukin_Diftitox;797-0;Денилейкин_дифтитокс
 Denosumab;3238-0;Деносумаб
 Dexamethasone;810-0;Дексаметазон
 Diethylstilbestrol;879-0;Диэтилстилбестрол
@@ -78,7 +78,7 @@ Dinutuximab;3614-0;Динутуксимаб
 Docetaxel;920-0;Доцетаксел
 Dostarlimab;4256-0;Достарлимаб
 Doxorubicin;938-0;Доксорубицин
-Doxorubicin Liposomal;939-0;Доксорубицин липосомальный
+Doxorubicin_Liposomal;939-0;Доксорубицин_липосомальный
 Durvalumab;3807-0;Дурвалумаб
 Duvelisib;3961-0;Дувелисиб
 Eflornithine;4576-0;Эфлорнитин
@@ -88,7 +88,7 @@ Elranatamab;4528-0;Элранатамаб
 Emapalumab;3978-0;Эмапалумаб
 Enasidenib;3854-0;Энасидениб
 Encorafenib;3921-0;Энкорафениб
-Enfortumab Vedotin;4111-0;Энфортумаб ведотин
+Enfortumab_Vedotin;4111-0;Энфортумаб_ведотин
 Entrectinib;4082-0;Энтректиниб
 Enzalutamide;3414-0;Энзалутамид
 Epcoritamab;4489-0;Эпкоритамаб
@@ -115,24 +115,24 @@ Gilteritinib;3981-0;Гилтеритиниб
 Glasdegib;3979-0;Гласдегиб
 Glofitamab;4501-0;Глофитамаб
 Goserelin;1195-0;Гозерелин
-Histamine phosphate;1244-0;Гистамина фосфат
+Histamine_phosphate;1244-0;Гистамина_фосфат
 Histrelin;1246-0;Гистрелин
 Hydroxyurea;1302-0;Гидроксиуреа
-Ibritumomab Tiuxetan;1309-0;Ибритумомаб тиуксетан
+Ibritumomab_Tiuxetan;1309-0;Ибритумомаб_тиуксетан
 Ibrutinib;3500-0;Ибрутиниб
 Idarubicin;1315-0;Идарубицин
-Idecabtagene Vicleucel;4250-0;Идекабтаген виклейцел
+Idecabtagene_Vicleucel;4250-0;Идекабтаген_виклейцел
 Idelalisib;3546-0;Иделалисиб
 Ifosfamide;1318-0;Ифосфамид
 Imatinib;1321-0;Иматиниб
-Imiquimod topical;1324-0;Имиквимод
+Imiquimod_topical;1324-0;Имиквимод
 Infigratinib;4265-0;Инфигратиниб
-Inotuzumab Ozogamicin;3857-0;Инотузумаб озогамицин
-Interferon Alfa-2b;1355-0;Интерферон альфа-2b
-Iobenguane I 131;3931-0;Йобенгуан (131I)
+Inotuzumab_Ozogamicin;3857-0;Инотузумаб_озогамицин
+Interferon_Alfa-2b;1355-0;Интерферон_альфа-2b
+Iobenguane_I_131;3931-0;Йобенгуан_(131I)
 Ipilimumab;3309-0;Ипилимумаб
 Irinotecan;1384-0;Иринотекан
-Irinotecan Liposomal;3698-0;Иринотекан липосомальный
+Irinotecan_Liposomal;3698-0;Иринотекан_липосомальный
 Isatuximab;4138-0;Изатуксимаб
 Ivosidenib;3927-0;Ивозидениб
 Ixabepilone;2794-0;Иксабепилон
@@ -145,31 +145,31 @@ Lenvatinib;3604-0;Ленватиниб
 Letrozole;1443-0;Летрозол
 Leuprolide;1445-0;Лейпрорелин
 Lifileucel;4584-0;Лифилеуцел
-Lisocabtagene Maraleucel;4239-0;Лизокабтаген маралейсел 
+Lisocabtagene_Maraleucel;4239-0;Лизокабтаген_маралейсел
 Lomustine;1481-0;Ломустин
-Loncastuximab Tesirine;4257-0;Лонкастуксимаб тезирин 
+Loncastuximab_Tesirine;4257-0;Лонкастуксимаб_тезирин
 Lorlatinib;3974-0;Лорлатиниб
-Lutetium lu 177 dotatate;3890-0;Лютеций-177 DOTA-TATE
+Lutetium_lu_177_dotatate;3890-0;Лютеций-177_DOTA-TATE
 Lurbinectedin;4161-0;Лурбинектедин
-Lutetium Lu 177 Vipivotide Tetraxetan;4350-0;Лютеция (Lu 177) випивотид тетраксетан
+Lutetium_Lu_177_Vipivotide_Tetraxetan;4350-0;Лютеция_(Lu_177)_випивотид_тетраксетан
 Margetuximab;4226-0;Маргетуксимаб
 Mechlorethamine;1539-0;Хлорметин
 Medroxyprogesterone;1543-0;Медроксипрогестерон
-Megestrol;1547-0;Мегэстрол 
+Megestrol;1547-0;Мегэстрол
 Melphalan;1550-0;Мелфалан
-Melphalan Flufenamide;4253-0;Мелфалан флуфенамид
+Melphalan_Flufenamide;4253-0;Мелфалан_флуфенамид
 Mercaptopurine;1565-0;Меркаптопурин
 Methotrexate;1590-0;Метотрексат
 Midostaurin;3804-0;Мидостаурин
-Mirvetuximab Soravtansine;4411-0;Мирветуксимаб соравтансин
+Mirvetuximab_Soravtansine;4411-0;Мирветуксимаб_соравтансин
 Mitomycin;1642-0;Митомицин
 Mitoxantrone;1644-0;Митоксантрон
 Mobocertinib;4298-0;Моборцетиниб
 Mogamulizumab;3947-0;Могамулизумаб
-Mosunetuzumab;4422-0;Мосунетузумаб 
-Moxetumomab Pasudotox;3959-0;Моксетумомаб пасудотокс
-Nadofaragene Firadenovec;4420-0;Надофараген фираденовек
-Naxitamab;4205-0;Накситамаб 
+Mosunetuzumab;4422-0;Мосунетузумаб
+Moxetumomab_Pasudotox;3959-0;Моксетумомаб_пасудотокс
+Nadofaragene_Firadenovec;4420-0;Надофараген_фираденовек
+Naxitamab;4205-0;Накситамаб
 Necitumumab;3716-0;Нецитумумаб
 Nelarabine;1699-0;Неларабин
 Neratinib;3827-0;Нератиниб
@@ -183,22 +183,22 @@ Ofatumumab;3179-0;Офатумумаб
 Olaparib;3580-0;Олапариб
 Olaratumab;3767-0;Оларатумаб
 Olutasidenib;4418-0;Олутазидениб
-Omacetaxine Mepesuccinate;3428-0;Омацетаксин Мепесуccинат
+Omacetaxine_Mepesuccinate;3428-0;Омацетаксин_Мепесуccинат
 Osimertinib;3709-0;Осимертиниб
 Oxaliplatin;1760-0;Оксалиплатин
 Paclitaxel;1778-0;Паклитаксел
 Panobinostat;3605-0;Панобиностат
 Pazopanib;3180-0;Пазопаниб
 Pegaspargase;1804-0;Пегаспаргаза
-Peginterferon Alfa-2b;1807-0;Пэгинтерферон альфа-2b
+Peginterferon_Alfa-2b;1807-0;Пэгинтерферон_альфа-2b
 Pembrolizumab;3558-0;Пембролизумаб
 Pemetrexed;1809-0;Пеметрексед
 Pemigatinib;4145-0;Пемигатиниб
 Pentostatin;1825-0;Пентостатин
 Pertuzumab;3400-0;Пертузумаб
-Pertuzumab, Trastuzumab, Hyaluronidase;4162-0;Пертузумаб, Трастузумаб, Гиалуронидаза
+Pertuzumab_Trastuzumab_Hyaluronidase;4162-0;Пертузумаб_Трастузумаб_Гиалуронидаза
 Pirtobrutinib;4429-0;Пиртобрутиниб
-Polatuzumab Vedotin;4020-0;Полатузумаб ведотин
+Polatuzumab_Vedotin;4020-0;Полатузумаб_ведотин
 Pomalidomide;3453-0;Помалидомид
 Ponatinib;3433-0;Понатиниб
 Porfimer;1901-0;Порфимер
@@ -208,21 +208,21 @@ Prednisolone;1933-0;Преднизолон
 Prednisone;1936-0;Преднизон
 Procarbazine;1945-0;Прокарбазин
 Quizartinib;4521-0;Квизартиниб
-Radium 223 Dichloride;3474-0;Радия (223Ra) дихлорид
+Radium_223_Dichloride;3474-0;Радия_(223Ra)_дихлорид
 Ramucirumab;3525-0;Рамуцирумаб
 Regorafenib;3420-0;Регорафениб
-Relatlimab , Nivolumab;4349-0;Релатлимаб, Ниволумаб
+Relatlimab_Nivolumab;4349-0;Релатлимаб_Ниволумаб
 Relugolix;4227-0;Релуголикс
 Repotrectinib;4564-0;Репотректиниб
 Retifanlimab;4460-0;Ретифанлимаб
 Ribociclib;3790-0;Рибоциклиб
 Ripretinib;4152-0;Рипретиниб
 Rituximab;3814-0;Ритуксимаб
-Rituximab Hyaluronidase;20222-0;Ритуксимаб,  Гиалуронидаза
+Rituximab_Hyaluronidase;20222-0;Ритуксимаб_Гиалуронидаза
 Romidepsin;3183-0;Ромидепсин
 Rucaparib;3778-0;Рукапариб
 Ruxolitinib;3352-0;Руксолитиниб
-Sacituzumab Govitecan;4147-0;Сацитузумаб говитекан
+Sacituzumab_Govitecan;4147-0;Сацитузумаб_говитекан
 Selinexor;4024-0;Селинексор
 Selpercatinib;4151-0;Селперкатиниб
 Sipuleucel-T;3232-0;Сипулеуцел-Т
@@ -234,7 +234,7 @@ Sunitinib;2138-0;Сунитиниб
 Tafasitamab;4172-0;Тафаситамаб
 Tagraxofusp;3988-0;Таграксофусп
 Talazoparib;3971-0;Талазопариб
-Talimogene Laherparepvec;3701-0;Талимоген лагерпарепвек 
+Talimogene_Laherparepvec;3701-0;Талимоген_лагерпарепвек
 Talquetamab;4526-0;Талкетамаб
 Tamoxifen;2145-0;Тамоксифен
 Tarlatamab;4614-0;Тарлатамаб
@@ -248,7 +248,7 @@ Thalidomide;2176-0;Талидомид
 Thioguanine;2182-0;Тиогуанин
 Thiotepa;2185-0;Тиотепа
 Tisagenlecleucel;3861-0;Тисагенлеклейцел
-Tisotumab Vedotin;4299-0;Тизотумаб-ведотин
+Tisotumab_Vedotin;4299-0;Тизотумаб-ведотин
 Tivozanib;4246-0;Тивозаниб
 Topotecan;2217-0;Топотекан
 Toremifene;2218-0;Торемифен
@@ -259,9 +259,9 @@ Trametinib;3476-0;Траметиниб
 Trastuzumab;2226-0;Трастузумаб
 Tremelimumab;4408-0;Тремелимумаб
 Tretinoin;2231-0;Третиноин
-Trifluridine ophthalmic;2244-0;Трифлуридин офтальмологический
+Trifluridine_ophthalmic;2244-0;Трифлуридин_офтальмологический
 Triptorelin;2258-0;Трипторелин
-Tucatinib;4144-0;Тукатиниб 
+Tucatinib;4144-0;Тукатиниб
 Umbralisib;4238-0;Умбрализиб
 Valrubicin;2287-0;Валрубицин
 Vandetanib;3312-0;Вандетаниб
@@ -269,17 +269,17 @@ Vemurafenib;3338-0;Вемурафениб
 Venetoclax;3745-0;Венетоклакс
 Vinblastine;2300-0;Винбластин
 Vincristine;2301-0;Винкристин
-Vincristine Liposome;3410-0;Винкристин липосомальный
+Vincristine_Liposome;3410-0;Винкристин_липосомальный
 Vinorelbine;2302-0;Винорельбин
 Vismodegib;3365-0;Висмодегиб
 Vorinostat;2310-0;Вориностат
 Zanubrutinib;4101-0;Занубрутиниб
-Atorvastatin;276-0;Аторвастатин        
+Atorvastatin;276-0;Аторвастатин
 Metformin;1573-0;Метформин
 Lisinopril;1476-0;Лизиноприл
 Levothyroxine;1463-0;Левотироксин
 Amlodipine;172-0;Амлодипин
-Metoprolol;1615-0;Метопролол        
+Metoprolol;1615-0;Метопролол
 Albuterol;109-0;Альбутерол
 Losartan;1489-0;Лозартан
 Omeprazole;1750-0;Омепразол
@@ -301,14 +301,14 @@ Furosemide;1146-0;Фуросемид
 Fluticasone;1124-0;Флутиказон
 Amoxicillin;187-0;Амоксициллин
 Apixaban;3438-0;Апиксабан
-Insulin Glargine;1344-0;Инсулин гларгин
+Insulin_Glargine;1344-0;Инсулин_гларгин
 Meloxicam;1549-0;Мелоксикам
 Prednisone;1936-0;Преднизон
 Duloxetine;949-0;Дулоксетин
 Methylphenidate;1606-0;Метилфенидат
 Ibuprofen;1310-0;Ибупрофен
 Carvedilol;531-0;Карведилол
-Potassium Chloride;1912-0;Калия хлорид
+Potassium_Chloride;1912-0;Калия_хлорид
 Aspirin;243-0;Аспирин
 Pravastatin;1929-0;Правастатин
 Ergocalciferol;1003-0;Эргокальциферол
@@ -338,12 +338,12 @@ Ondansetron;1752-0;Ондансетрон
 Cholecalciferol;646-0;Колекальциферол
 Atenolol;273-0;Атенолол
 Glimepiride;1176-0;Глимепирид
-Folic Acid;1129-0;Фолиевая кислота
+Folic_Acid;1129-0;Фолиевая_кислота
 Zolpidem;2333-0;Золпидем
-Latanoprost ophthalmic;1438-0;Латанопрост офтальмологический
+Latanoprost_ophthalmic;1438-0;Латанопрост_офтальмологический
 Doxycycline;940-0;Доксициклин
-Lisdexamfetamine;1475-0;Лиздексамфетамин 
-Insulin Lispro;1349-0;Инсулин лизпро
+Lisdexamfetamine;1475-0;Лиздексамфетамин
+Insulin_Lispro;1349-0;Инсулин_лизпро
 Clonidine;704-0;Клонидин
 Loratadine;1486-0;Лоратадин
 Finasteride;1091-0;Финастерид

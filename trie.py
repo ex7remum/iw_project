@@ -2,6 +2,16 @@ from graphviz import Digraph
 import logging
 from functools import lru_cache
 import pandas as pd
+import time
+
+def timeit(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Функция {func.__name__} выполнена за {end_time - start_time:.4f} секунд")
+        return result
+    return wrapper
 
 class TrieNode:
     def __init__(self):
@@ -23,6 +33,7 @@ def load_medicines_to_trie(trie):
     #trie_visualizer.draw().render("trie_structure", format="png", view=True)
 
 class Trie:
+    @timeit
     @lru_cache(maxsize=3)
     def __init__(self, lang):
         print('Trie created')

@@ -11,6 +11,7 @@ class DrugInteractionProcessor:
     def __init__(self):
         # Load the CSV data once and reuse it
         self.drugs_data = pd.read_csv('medicines.csv', sep=';')
+        self.drugs_data= self.drugs_data.applymap(lambda s:s.lower() if type(s) == str else s)
     
     @staticmethod
     def translate_deep_translate(text):

@@ -10,10 +10,27 @@ app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 def download_csv():
-    if not os.path.exists('medicines.csv'):
-        url = "https://docs.google.com/spreadsheets/d/1NmeYrISaCTMogoEGRXgL8A7hvcfgfB8hQ_PG4gYPKcM/export?format=csv"
-        df = pd.read_csv(url, index_col=0)
-        df.to_csv(path_or_buf='medicines.csv', sep=';', index=True)
+    url = "https://docs.google.com/spreadsheets/d/1NmeYrISaCTMogoEGRXgL8A7hvcfgfB8hQ_PG4gYPKcM/export?format=csv"
+
+    # Load the remote CSV file
+    remote_df = pd.read_csv(url, index_col=0)
+
+    # Check if the local CSV file exists
+    if os.path.exists('medicines.csv'):
+        # Load the local CSV file
+        local_df = pd.read_csv('medicines.csv', sep=';', index_col=0)
+        
+        # Check if the local and remote CSV files are the same
+        if not local_df.equals(remote_df):
+            print("Local file is outdated. Updating the file...")
+            # Update the local CSV file if the content differs
+            remote_df.to_csv('medicines.csv', sep=';', index=True)
+        else:
+            print("Local file is up to date.")
+    else:
+        print("Local file does not exist. Downloading the file...")
+        # If the local file doesn't exist, save the remote file
+        remote_df.to_csv('medicines.csv', sep=';', index=True)
 
 download_csv()
 processor = DrugInteractionProcessor()  # Instantiate the processor once

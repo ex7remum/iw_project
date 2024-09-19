@@ -51,7 +51,7 @@ class DrugInteractionProcessor:
         else:
             return f'{drug1} and {drug2}: {response}\n\n'
 
-    @lru_cache(maxsize=128)
+    @lru_cache(maxsize=1024)
     def get_info_from_drugs_com(self, id1, id2):
         url = f'https://www.drugs.com/interactions-check.php?drug_list={id1},{id2}'
         opener = urllib.request.FancyURLopener({})
@@ -73,6 +73,9 @@ class DrugInteractionProcessor:
         medicine_list_ids = self.parse_items_to_ids(medicine_list, lang)
 
         all_info = []
+        if len(medicine_list_ids) < 2:
+            return "please choose at least 2 medicines"
+
         for i in range(len(medicine_list_ids)):
             for j in range(i, len(medicine_list_ids)):
                 info_from_drugs = self.get_info_from_drugs_com(medicine_list_ids[i], medicine_list_ids[j])

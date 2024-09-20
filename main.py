@@ -43,6 +43,7 @@ def download_csv():
 download_csv()  
 
 processor = DrugInteractionProcessor()  # Instantiate the processor once
+#processor.precompute_all_pairs()
 
 
 # Function to load medicines from CSV
@@ -61,7 +62,7 @@ def index():
     # Set default language
     if 'lang' not in session:
         session['lang'] = 'en'
-    medicine_trie = Trie(session['lang'])  # this causes the session error
+    #medicine_trie = Trie(session['lang'])  # this causes the session error
     
     medicines = load_medicines(session['lang'])
     

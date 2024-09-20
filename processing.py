@@ -5,7 +5,7 @@ import re
 import requests
 from deep_translator import GoogleTranslator
 from functools import lru_cache
-
+#pip install lxml before works
 
 class DrugInteractionProcessor:
     def __init__(self):
@@ -56,27 +56,23 @@ class DrugInteractionProcessor:
         else:
             return f'{drug1} and {drug2}: {response}\n\n'
 
-    @lru_cache(maxsize=1024)
     def get_info_from_drugs_com(self, id1, id2):
         try:
             url = f'https://www.drugs.com/interactions-check.php?drug_list={id1},{id2}'
-            opener = urllib.request.FancyURLopener({})
-            f = opener.open(url)
-            content = f.read()
-            soup = BeautifulSoup(content, 'html.parser')
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an error for bad responses
 
+            soup = BeautifulSoup(response.content, 'lxml')  # Use lxml for faster parsing
             interactions_list_info = soup.find_all('div', {"class": "interactions-reference-wrapper"})
 
-            # remove all inside <>
-            info = []
-            for interaction_info in interactions_list_info:
-                info.append(self.remove_html_tags(str(interaction_info)))
+            # Remove all inside <>
+            info = [self.remove_html_tags(str(interaction_info)) for interaction_info in interactions_list_info]
 
             return info
-        except Exception as e:  # Перехват исключения и вывод ошибки
+        except requests.RequestException as e:  # Handle request exceptions
             print(f"Error occurred: {e}")
-            return [f'Failed to process drugs']
-        
+            return ['Failed to process drugs']
+            
 
     def processing(self, medicine_list, lang):
         medicine_list = list(set(medicine_list))

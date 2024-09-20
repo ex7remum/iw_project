@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_session import Session
+
 from processing import DrugInteractionProcessor
 from trie import Trie
 import pandas as pd
@@ -86,15 +87,21 @@ def autocomplete():
     query = request.args.get('q', '').lower()
     if not query:
         return jsonify([])
+
     if 'lang' not in session:
         session['lang'] = 'en'
+        
     medicine_trie = Trie(session['lang'])
+    
     # Get autocomplete suggestions from the trie
     suggestions = medicine_trie.autocomplete(query)
     
+    if not suggestions:
+        return jsonify([f"No medicines found starting with '{query}'"])
+    
     suggestions = list(map(str.strip, list(map(str.capitalize, suggestions))))
-
     return jsonify(suggestions)
+
 
 if __name__ == '__main__':
     #app.config["SCOUT_MONITOR"] = True

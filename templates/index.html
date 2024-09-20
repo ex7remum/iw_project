@@ -105,48 +105,52 @@
         }
     </style>
 
-    <script>
-        $(function() {
-            // Функция для получения последнего введенного слова
-            function extractLast(term) {
-                return term.split(',').pop().trim();
-            }
+<script>
+    $(function() {
+        function extractLast(term) {
+            return term.split(',').pop().trim();
+        }
 
-            // Настройка автодополнения
-            $("#medicines").on("keydown", function(event) {
-                if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
-                    event.preventDefault();
-                }
-            }).autocomplete({
-                source: function(request, response) {
-                    $.ajax({
-                        url: "/autocomplete",
-                        data: {
-                            q: extractLast(request.term)
-                        },
-                        success: function(data) {
-                            response(data);
+        $("#medicines").on("keydown", function(event) {
+            if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
+                event.preventDefault();
+            }
+        }).autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "/autocomplete",
+                    data: {
+                        q: extractLast(request.term)
+                    },
+                    success: function(data) {
+                        if (data.length === 1 && data[0].startsWith("No medicines")) {
+                            // Display the message in the autocomplete field
+                            alert(data[0]);
+                            return;
                         }
-                    });
-                },
-                search: function() {
-                    var term = extractLast(this.value);
-                    return term.length >= 2;
-                },
-                focus: function() {
-                    return false;
-                },
-                select: function(event, ui) {
-                    var terms = this.value.split(',');
-                    terms.pop();
-                    terms.push(ui.item.value);
-                    terms.push("");
-                    this.value = terms.join(", ");
-                    return false;
-                }
-            });
+                        response(data);
+                    }
+                });
+            },
+            search: function() {
+                var term = extractLast(this.value);
+                return term.length >= 2;
+            },
+            focus: function() {
+                return false;
+            },
+            select: function(event, ui) {
+                var terms = this.value.split(',');
+                terms.pop();
+                terms.push(ui.item.value);
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
+            }
         });
-    </script>
+    });
+</script>
+
 </head>
 <body>
     <h1>{{ 'DocMeds' }}</h1>

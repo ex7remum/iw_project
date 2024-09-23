@@ -5,8 +5,8 @@ import re
 import requests
 from deep_translator import GoogleTranslator
 from functools import lru_cache
-from llama_api import make_request
 import json 
+import axios  # Make sure to install this: pip install axios
 #pip install lxml before works
 
 class DrugInteractionProcessor:
@@ -15,10 +15,12 @@ class DrugInteractionProcessor:
         self.drugs_data = pd.read_csv('medicines.csv', sep=';')
         self.drugs_data= self.drugs_data.applymap(lambda s:s.lower() if type(s) == str else s)
     
+
     @staticmethod
     def translate_deep_translate(text):
         return GoogleTranslator(source='en', target='ru').translate(text)
     
+
     @staticmethod
     def remove_html_tags(text):
         CLEANR = re.compile('<.*?>')
@@ -26,7 +28,36 @@ class DrugInteractionProcessor:
         cleantext = re.sub('Therapeutic duplication warnings', 'Therapeutic duplication warnings. ', cleantext)
         return cleantext
 
+
+    @staticmethod
+    def summarize_with_llama(text, language='en'):
+        api_key = "SG_a5e178f46ae9bdb4"
+        url = "https://api.segmind.com/v1/llama-v3p1-405b-instruct"
+
+        if language == 'en':
+            language = 'english'
+        else:
+            language = 'russian'
+            
+        data = {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Summarize the following text in {language}:\n{text}"
+                }
+            ]
+        }
+
+        try:
+            response = requests.post(url, json=data, headers={'x-api-key': api_key})
+            response.raise_for_status()
+            #print(response.json())
+            return response.json()['choices'][0]['message']['content']
+        except requests.RequestException as e:
+            print(f"Error occurred while calling Llama API: {e}")
+            return None
     
+
     def parse_items_to_ids(self, medicine_list, lang):
         ids = []
         for drug in medicine_list:
@@ -39,6 +70,7 @@ class DrugInteractionProcessor:
                 print(f"Drug {drug} not found.")
         return ids
     
+
     @staticmethod
     def create_proper_response(response, drug1, drug2):
         res_response = ''
@@ -57,6 +89,7 @@ class DrugInteractionProcessor:
             return res_response
         else:
             return f'{drug1} and {drug2}: {response}\n\n'
+
 
     def get_info_from_drugs_com(self, id1, id2):
         try:
@@ -104,9 +137,9 @@ class DrugInteractionProcessor:
             
             result_message = f"Вы выбрали следующие лекарства: {', '.join(medicine_list)}\n{all_info_string}"
             if use_summarizer:
-                result_message = make_request(f'Суммаризуй:\n{all_info_string}', language='ru')
-                if result_message:
-                    result_message = json.dumps(result_message, indent=2)
+                summary = self.summarize_with_llama(all_info_string, language='ru')
+                if summary:
+                    result_message = summary
                 else:
                     result_message = f'Произошла ошибка. Пожалуйста, попробуйте позже'
 
@@ -114,11 +147,10 @@ class DrugInteractionProcessor:
         
         result_message = f"You selected the following medicines: {', '.join(medicine_list)}\n{'\n\n'.join(all_info)}"
         if use_summarizer:
-            result_message = make_request(f'Summarize:\n{result_message}')
-
-            if result_message:
-                result_message = json.dumps(result_message, indent=2)
+            summary = self.summarize_with_llama(result_message)
+            if summary:
+                result_message = summary
             else:
-                result_message = f'Error occured. Please try later'
+                result_message = f'Error occurred. Please try later'
 
         return result_message

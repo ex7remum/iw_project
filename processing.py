@@ -43,7 +43,7 @@ class DrugInteractionProcessor:
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Summarize the following text in {language}:\n{text}"
+                    "content": f"Summarize the following text in {language}, use bullet points and don't use bold letters, start answering with summary, write only important information about interactions:\n{text}"
                 }
             ]
         }
@@ -132,8 +132,8 @@ class DrugInteractionProcessor:
         if lang == 'ru':
             all_info_string = ''
             for eng_info in all_info:
-                translated_info = self.translate_deep_translate(eng_info)
-                all_info_string += translated_info + '\n\n'
+                #translated_info = self.translate_deep_translate(eng_info)
+                all_info_string += eng_info + '\n\n'
             
             result_message = f"Вы выбрали следующие лекарства: {', '.join(medicine_list)}\n{all_info_string}"
             if use_summarizer:

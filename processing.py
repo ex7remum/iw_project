@@ -5,6 +5,8 @@ import re
 import requests
 from deep_translator import GoogleTranslator
 from functools import lru_cache
+from llama_api import make_request
+import json 
 #pip install lxml before works
 
 class DrugInteractionProcessor:
@@ -74,8 +76,8 @@ class DrugInteractionProcessor:
             return ['Failed to process drugs']
             
 
-    def processing(self, medicine_list, lang):
-        medicine_list = list(set(medicine_list))
+    def processing(self, medicine_list, lang, use_summarizer=False):
+        medicine_list = [med.strip() for med in set(medicine_list) if med.strip()]
         medicine_list_ids = self.parse_items_to_ids(medicine_list, lang)
 
         all_info = []
@@ -99,7 +101,24 @@ class DrugInteractionProcessor:
             for eng_info in all_info:
                 translated_info = self.translate_deep_translate(eng_info)
                 all_info_string += translated_info + '\n\n'
-            return f"Вы выбрали следующие лекарства: {', '.join(medicine_list)}\n{all_info_string}"
+            
+            result_message = f"Вы выбрали следующие лекарства: {', '.join(medicine_list)}\n{all_info_string}"
+            if use_summarizer:
+                result_message = make_request(f'Суммаризуй:\n{all_info_string}', language='ru')
+                if result_message:
+                    result_message = json.dumps(result_message, indent=2)
+                else:
+                    result_message = f'Произошла ошибка. Пожалуйста, попробуйте позже'
 
-        return f"You selected the following medicines: {', '.join(medicine_list)}\n{'\n\n'.join(all_info)}"
+            return result_message
+        
+        result_message = f"You selected the following medicines: {', '.join(medicine_list)}\n{'\n\n'.join(all_info)}"
+        if use_summarizer:
+            result_message = make_request(f'Summarize:\n{all_info_string}')
 
+            if result_message:
+                result_message = json.dumps(result_message, indent=2)
+            else:
+                result_message = f'Error occured. Please try later'
+                
+        return result_message

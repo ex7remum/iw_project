@@ -7,6 +7,7 @@ import pandas as pd
 import os
 from trie import TrieVisualizer
 from scout_apm.flask import ScoutApm
+import argparse
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -43,6 +44,7 @@ def download_csv():
 download_csv()  
 
 processor = DrugInteractionProcessor()  # Instantiate the processor once
+use_summ_flag = False
 #processor.precompute_all_pairs()
 
 
@@ -78,7 +80,7 @@ def index():
 
             valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
            
-            result = processor.processing(valid_medicines, session['lang'])
+            result = processor.processing(valid_medicines, session['lang'], use_summarizer=use_summ_flag)
 
     return render_template('index.html', result=result, lang=session['lang'])
 
@@ -109,5 +111,15 @@ if __name__ == '__main__':
     #app.config["SCOUT_KEY"] = "[c1V7BzRYPDMnjYvn3aFF]" 
     #app.config["SCOUT_NAME"] = "A FRIENDLY NAME FOR YOUR APP"
     #ScoutApm(app)
+    parser = argparse.ArgumentParser(
+                    prog='DocMeds',
+                    description='Check drug interaction')
+    parser.add_argument('-u', '--use_summ', default='no')
+    args = parser.parse_args()
+
+    if args.use_summ == 'no':
+        use_summ_flag = False
+    else:
+        use_summ_flag = True
 
     app.run(debug=False)

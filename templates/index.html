@@ -140,11 +140,16 @@
                 return false;
             },
             select: function(event, ui) {
-                var terms = this.value.split(',');
+                var terms = this.value.replace(/\s/g, "").split(',');
+                // Удаляем последний термин (неполный ввод)
                 terms.pop();
+                // Добавляем выбранное значение
                 terms.push(ui.item.value);
-                terms.push("");
+                // Обновляем значение поля ввода
                 this.value = terms.join(", ");
+                if (this.value) {
+                    this.value += ", ";
+                }
                 return false;
             }
         });

@@ -114,11 +114,11 @@ class DrugInteractionProcessor:
         
         result_message = f"You selected the following medicines: {', '.join(medicine_list)}\n{'\n\n'.join(all_info)}"
         if use_summarizer:
-            result_message = make_request(f'Summarize:\n{all_info_string}')
+            result_message = make_request(f'Summarize:\n{result_message}')
 
             if result_message:
                 result_message = json.dumps(result_message, indent=2)
             else:
                 result_message = f'Error occured. Please try later'
-                
+
         return result_message

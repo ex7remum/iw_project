@@ -86,6 +86,7 @@ def index():
             valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
            
             result = processor.processing(openai, valid_medicines, session['lang'], use_summarizer=use_summ_flag)
+            print(result)
 
     return render_template('index.html', result=result, lang=session['lang'])
 

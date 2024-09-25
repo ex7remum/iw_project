@@ -34,7 +34,12 @@ class DrugInteractionProcessor:
         try:
             chat_completion = openai.chat.completions.create(
                 model="meta-llama/Meta-Llama-3.1-405B-Instruct",
-                messages=[{"role": "user", "content": f"Summarize the following text in {language}, use bullet points, start answering with summary, write only important information about interactions. Split information by 4 parts: danger interaction, medium-risk interaction, low-risk, no-risk interaction. Write at the top one short sentence which summarize all of following information like (write to the end of this sentence color in braces like red, yellow and green which represents treat level): ok treatment or dangerous treatment and so on. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named duplication shortly:\n{text}"}],
+                messages=[{"role": "user", "content": f'''Summarize the following text in {language}, use bullet points, start answering with summary,
+                            write only important information about interactions. Split information by 5 parts: summary result, danger interaction, medium-risk interaction,
+                            low-risk, no-risk interaction. First section is about short one-sentence summary of following information like (write to 
+                           the end of this sentence color in braces like red, yellow and green which represents treat level -- USE ONE WORD WITH symbols like !yellow!): ok treatment or dangerous
+                            treatment. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named
+                            duplication shortly. Use $ symbol as separator between every section:\n{text}'''}],
             )
             return chat_completion.choices[0].message.content
         
@@ -95,19 +100,22 @@ class DrugInteractionProcessor:
         
 
     def parse_summary(self, summary):
-        sections = ['Danger Interaction:', 'Medium-Risk Interaction:', 'Low-Risk Interaction:', 'No-Risk Interaction:', 'Duplication:']
+        summary = re.sub(r"\*", "", summary)
+        summary = summary.split('$')
+        print(summary)
+
         result = {}
-        
+
         # Extract the short answer (first line)
-        result['short_answer'] = summary.split('\n')[0]
-        
-        current_section = ''
-        for line in summary.split('\n')[1:]:
-            if line.strip() in sections:
-                current_section = line.strip()[:-1]  # Remove the colon
-                result[current_section] = []
-            elif current_section and line.strip():
-                result[current_section].append(line.strip())
+        result['short_answer'] = summary[0]
+
+        for i, item in enumerate(summary):
+            if not i:
+                continue
+            item = item.strip()
+            col_pos = re.search(':', item).start()
+            current_section = item[:col_pos] # Remove the colon
+            result[item[:col_pos]] = item[col_pos + 1:]
         
         return result
             
@@ -152,6 +160,7 @@ class DrugInteractionProcessor:
         if use_summarizer:
             summary = self.summarize_with_llama(openai, result_message)
             if summary:
+                print(summary)
                 result_message = self.parse_summary(summary)
             else:
                 result_message = {'error': f'Error occurred. Please try later'}

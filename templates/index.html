@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ 'DocMeds' if lang == 'ru' else 'DocMeds' }}</title>
-
+ 
     <!-- Подключение библиотеки jQuery для автодополнения -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
+ 
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,13 +23,13 @@
             padding-top: 50px;
             background-color: #e6f4ea;
         }
-
+ 
         form {
             max-width: 100%;
             margin: 20px auto;
             text-align: center;
         }
-
+ 
         input[type="text"], textarea {
             width: 90%;
             padding: 10px;
@@ -39,7 +39,7 @@
             background-color: #f0f9f4;
             color: #4f6d5f;
         }
-
+ 
         input[type="submit"], button {
             padding: 10px 20px;
             font-size: 16px;
@@ -48,41 +48,41 @@
             color: white;
             cursor: pointer;
         }
-
+ 
         textarea {
             resize: none;
             height: 40vh;
             margin-bottom: 20px;
         }
-
+ 
         h1, h2 {
             text-align: center;
             margin: 0;
             color: #4f6d5f;
         }
-
+ 
         h1 {
             margin-bottom: 30px;
         }
-
+ 
         .result-section {
             margin-bottom: 20px;
             padding: 10px;
             border-radius: 5px;
         }
-
+ 
         .short-answer {
             font-weight: bold;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
-
+ 
         .danger { background-color: #ffcccc; }
         .medium { background-color: #ffd699; }
         .low { background-color: #ffffcc; }
         .no-risk { background-color: #ccffcc; }
-
+ 
         /* Для мобильных устройств */
         @media (max-width: 768px) {
             input[type="text"], textarea {
@@ -90,46 +90,45 @@
                 padding-left: 15px;
                 padding-right: 15px;
             }
-
+ 
             form {
                 padding-left: 15px;
                 padding-right: 15px;
             }
         }
-
+ 
         /* Для маленьких экранов (мобильные портрет) */
         @media (max-width: 480px) {
             input[type="text"], textarea {
                 width: 85%;
             }
-
+ 
             textarea {
                 height: 35vh;
                 padding-left: 10px;
                 padding-right: 10px;
             }
         }
-
+ 
         /* Ограничение ширины для больших экранов */
         @media (min-width: 768px) {
             body {
                 max-width: 1200px;
                 margin: 0 auto;
             }
-
+ 
             input[type="text"], textarea {
                 width: 70%;
             }
         }
     </style>
-
+ 
     <script>
         $(function() {
             function extractLast(term) {
                 return term.split(',').pop().trim();
             }
-
-
+ 
             $("#medicines").on("keydown", function(event) {
                 if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
@@ -173,40 +172,56 @@
 </head>
 <body>
     <h1>{{ 'DocMeds' }}</h1>
-
+ 
     <!-- Кнопка смены языка -->
     <form method="POST">
         <button name="lang_switch" type="submit">
             {{ 'Сменить язык' if lang == 'en' else 'Switch Language' }}
         </button>
     </form>
-
+ 
     <br>
-
+ 
     <!-- Форма для ввода списка лекарств -->
     <form method="POST">
         <label for="medicines">{{ 'Введите хотя бы 2 лекарства через запятую:' if lang == 'ru' else 'Enter at least 2 medicines separated by commas:' }}</label>
         <input type="text" name="medicines" id="medicines" placeholder="{{ 'Введите лекарства' if lang == 'ru' else 'Enter medicines' }}">
-
+ 
         <br><br>
-
+ 
         <input type="submit" value="{{ 'Отправить' if lang == 'ru' else 'Submit' }}">
     </form>
-
-    
+ 
+ 
     <h2>{{ 'Результат:' if lang == 'ru' else 'Result:' }}</h2>
-        
+ 
     {% if result %}
         {% if result is mapping %}
+
+            {% set cleaned_short_answer = result.short_answer.replace('!', '') %}
+            {% set color = '' %}
+            
+            {% if 'red' in cleaned_short_answer.lower() %}
+                {% set color = 'red' %}
+            {% elif 'orange' in cleaned_short_answer.lower() %}
+                {% set color = 'orange' %}
+            {% elif 'yellow' in cleaned_short_answer.lower() %}
+                {% set color = 'yellow' %}
+            {% elif 'green' in cleaned_short_answer.lower() %}
+                {% set color = 'green' %}
+            {% endif %}
+        
+            {% set display_text = cleaned_short_answer.replace(color, '') %}
+
             <div class="short-answer" style="background-color: 
                 {% if 'red' in result.short_answer.lower() %}#ffcccc
                 {% elif 'orange' in result.short_answer.lower() %}#ffd699
                 {% elif 'yellow' in result.short_answer.lower() %}#ffffcc
                 {% elif 'green' in result.short_answer.lower() %}#ccffcc
                 {% else %}#ffffff{% endif %};">
-                {{ result.short_answer }}
+                {{ display_text }}
             </div>
-            
+ 
             {% for section, items in result.items() %}
                 {% if section != 'short_answer' and items %}
                     <div class="result-section 
@@ -216,9 +231,9 @@
                         {% elif 'No-Risk' in section %}no-risk{% endif %}">
                         <h3>{{ section }}</h3>
                         <ul>
-                            {% for item in items %}
-                                <li>{{ item }}</li>
-                            {% endfor %}
+                            
+                            <li>{{ items }}</li>
+                            
                         </ul>
                     </div>
                 {% endif %}
@@ -227,6 +242,6 @@
             <textarea rows="10" readonly>{{ result }}</textarea>
         {% endif %}
     {% endif %}
-
+ 
 </body>
 </html>

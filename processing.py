@@ -101,6 +101,7 @@ class DrugInteractionProcessor:
 
     def parse_summary(self, summary):
         summary = re.sub(r"\*", "", summary)
+        summary = re.sub(r"•", "", summary)
         summary = summary.split('$')
         print(summary)
 

@@ -213,6 +213,10 @@
         
             {% set display_text = cleaned_short_answer.replace(color, '') %}
 
+            {% if lang == 'ru' %}
+                {% set display_text = display_text.replace('Summary', 'Итог') %}
+            {% endif %}
+
             <div class="short-answer" style="background-color: 
                 {% if 'red' in result.short_answer.lower() %}#ffcccc
                 {% elif 'orange' in result.short_answer.lower() %}#ffd699
@@ -223,13 +227,31 @@
             </div>
  
             {% for section, items in result.items() %}
+
                 {% if section != 'short_answer' and items %}
+
+                    {% set risk = section %}
+
+                    {% if 'Danger' in section and lang == 'ru' %}
+                        {% set risk = 'Опасные взаимодействия' %}
+                    {% elif 'Medium' in section and lang == 'ru' %}
+                        {% set risk = 'Умеренная опасность' %}
+                    {% elif 'Low' in section and lang == 'ru' %}
+                        {% set risk = 'Низкая опасность' %}
+                    {% elif 'No' in section and lang == 'ru' %}
+                        {% set risk = 'Отсутствие взаимодействия' %}
+                    {% elif 'Duplication' in section and lang == 'ru' %}
+                        {% set risk = 'Дублирование' %}
+                    {% endif %}
+
                     <div class="result-section 
                         {% if 'Danger' in section %}danger
-                        {% elif 'Medium-Risk' in section %}medium
-                        {% elif 'Low-Risk' in section %}low
-                        {% elif 'No-Risk' in section %}no-risk{% endif %}">
-                        <h3>{{ section }}</h3>
+                        {% elif 'Medium' in section %}medium
+                        {% elif 'Low' in section %}low
+                        {% elif 'No' in section %}no-risk{% endif %}">
+
+
+                        <h3>{{ risk }}</h3>
                         <ul>
                             
                             <li>{{ items }}</li>

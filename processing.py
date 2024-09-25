@@ -30,11 +30,11 @@ class DrugInteractionProcessor:
         return cleantext
 
 
-    def summarize_with_llama(openai, text, language='en'):
+    def summarize_with_llama(self, openai, text, language='en'):
         try:
             chat_completion = openai.chat.completions.create(
                 model="meta-llama/Meta-Llama-3.1-405B-Instruct",
-                messages=[{"role": "user", "content": f"Summarize the following text in {language}, use bullet points and don't use bold letters, start answering with summary, write only important information about interactions:\n{text}"}],
+                messages=[{"role": "user", "content": f"Summarize the following text in {language}, use bullet points, start answering with summary, write only important information about interactions. Split information by 4 parts: danger interaction, medium-risk interaction, low-risk, no-risk interaction. Write at the top one short sentence which summarize all of following information like (write to the end of this sentence color in braces like red, yellow and green which represents treat level): ok treatment or dangerous treatment and so on. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named duplication shortly:\n{text}"}],
             )
             return chat_completion.choices[0].message.content
         

@@ -92,6 +92,24 @@ class DrugInteractionProcessor:
         except requests.RequestException as e:  # Handle request exceptions
             print(f"Error occurred: {e}")
             return ['Failed to process drugs']
+        
+
+    def parse_summary(self, summary):
+        sections = ['Danger Interaction:', 'Medium-Risk Interaction:', 'Low-Risk Interaction:', 'No-Risk Interaction:', 'Duplication:']
+        result = {}
+        
+        # Extract the short answer (first line)
+        result['short_answer'] = summary.split('\n')[0]
+        
+        current_section = ''
+        for line in summary.split('\n')[1:]:
+            if line.strip() in sections:
+                current_section = line.strip()[:-1]  # Remove the colon
+                result[current_section] = []
+            elif current_section and line.strip():
+                result[current_section].append(line.strip())
+        
+        return result
             
 
     def processing(self, openai, medicine_list, lang, use_summarizer=False):
@@ -124,9 +142,9 @@ class DrugInteractionProcessor:
             if use_summarizer:
                 summary = self.summarize_with_llama(openai, all_info_string, language='ru')
                 if summary:
-                    result_message = summary
+                    result_message = self.parse_summary(summary)
                 else:
-                    result_message = f'Произошла ошибка. Пожалуйста, попробуйте позже'
+                    result_message = {'error': f'Произошла ошибка. Пожалуйста, попробуйте позже'}
 
             return result_message
         
@@ -134,8 +152,8 @@ class DrugInteractionProcessor:
         if use_summarizer:
             summary = self.summarize_with_llama(openai, result_message)
             if summary:
-                result_message = summary
+                result_message = self.parse_summary(summary)
             else:
-                result_message = f'Error occurred. Please try later'
+                result_message = {'error': f'Error occurred. Please try later'}
 
         return result_message

@@ -21,7 +21,7 @@
             align-items: center;
             min-height: 100vh;
             padding-top: 50px;
-            background-color: #e6f4ea; /* Светло-зелёный фон */
+            background-color: #e6f4ea;
         }
 
         form {
@@ -35,15 +35,15 @@
             padding: 10px;
             box-sizing: border-box;
             font-size: 16px;
-            border: 1px solid #91c5a9; /* Светло-зелёная рамка */
-            background-color: #f0f9f4; /* Очень светло-зелёный фон полей ввода */
-            color: #4f6d5f; /* Цвет текста */
+            border: 1px solid #91c5a9;
+            background-color: #f0f9f4;
+            color: #4f6d5f;
         }
 
         input[type="submit"], button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #91c5a9; /* Светло-зелёная кнопка */
+            background-color: #91c5a9;
             border: none;
             color: white;
             cursor: pointer;
@@ -51,19 +51,37 @@
 
         textarea {
             resize: none;
-            height: 40vh; /* Высота 40% экрана */
+            height: 40vh;
             margin-bottom: 20px;
         }
 
         h1, h2 {
             text-align: center;
             margin: 0;
-            color: #4f6d5f; /* Тёмно-зелёный для заголовков */
+            color: #4f6d5f;
         }
 
         h1 {
             margin-bottom: 30px;
         }
+
+        .result-section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .short-answer {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .danger { background-color: #ffcccc; }
+        .medium { background-color: #ffd699; }
+        .low { background-color: #ffffcc; }
+        .no-risk { background-color: #ccffcc; }
 
         /* Для мобильных устройств */
         @media (max-width: 768px) {
@@ -86,7 +104,7 @@
             }
 
             textarea {
-                height: 35vh; /* Немного меньше на мобильных */
+                height: 35vh;
                 padding-left: 10px;
                 padding-right: 10px;
             }
@@ -105,57 +123,53 @@
         }
     </style>
 
-<script>
-    $(function() {
-        function extractLast(term) {
-            return term.split(',').pop().trim();
-        }
-
-        $("#medicines").on("keydown", function(event) {
-            if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
-                event.preventDefault();
+    <script>
+        $(function() {
+            function extractLast(term) {
+                return term.split(',').pop().trim();
             }
-        }).autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "/autocomplete",
-                    data: {
-                        q: extractLast(request.term)
-                    },
-                    success: function(data) {
-                        if (data.length === 1 && data[0].startsWith("No medicines")) {
-                            // Display the message in the autocomplete field
-                            alert(data[0]);
-                            return;
-                        }
-                        response(data);
-                    }
-                });
-            },
-            search: function() {
-                var term = extractLast(this.value);
-                return term.length >= 2;
-            },
-            focus: function() {
-                return false;
-            },
-            select: function(event, ui) {
-                var terms = this.value.replace(/\s/g, "").split(',');
-                // Удаляем последний термин (неполный ввод)
-                terms.pop();
-                // Добавляем выбранное значение
-                terms.push(ui.item.value);
-                // Обновляем значение поля ввода
-                this.value = terms.join(", ");
-                if (this.value) {
-                    this.value += ", ";
+
+
+            $("#medicines").on("keydown", function(event) {
+                if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
+                    event.preventDefault();
                 }
-                return false;
-            }
+            }).autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/autocomplete",
+                        data: {
+                            q: extractLast(request.term)
+                        },
+                        success: function(data) {
+                            if (data.length === 1 && data[0].startsWith("No medicines")) {
+                                alert(data[0]);
+                                return;
+                            }
+                            response(data);
+                        }
+                    });
+                },
+                search: function() {
+                    var term = extractLast(this.value);
+                    return term.length >= 2;
+                },
+                focus: function() {
+                    return false;
+                },
+                select: function(event, ui) {
+                    var terms = this.value.replace(/\s/g, "").split(',');
+                    terms.pop();
+                    terms.push(ui.item.value);
+                    this.value = terms.join(", ");
+                    if (this.value) {
+                        this.value += ", ";
+                    }
+                    return false;
+                }
+            });
         });
-    });
-</script>
-
+    </script>
 </head>
 <body>
     <h1>{{ 'DocMeds' }}</h1>
@@ -179,10 +193,40 @@
         <input type="submit" value="{{ 'Отправить' if lang == 'ru' else 'Submit' }}">
     </form>
 
-    <h2>{{ 'Результат:' if lang == 'ru' else 'Result:' }}</h2>
     
-    <!-- Увеличенное поле для вывода результатов -->
-    <textarea rows="10" readonly>{{ result }}</textarea>
+    <h2>{{ 'Результат:' if lang == 'ru' else 'Result:' }}</h2>
+        
+    {% if result %}
+        {% if result is mapping %}
+            <div class="short-answer" style="background-color: 
+                {% if 'red' in result.short_answer.lower() %}#ffcccc
+                {% elif 'orange' in result.short_answer.lower() %}#ffd699
+                {% elif 'yellow' in result.short_answer.lower() %}#ffffcc
+                {% elif 'green' in result.short_answer.lower() %}#ccffcc
+                {% else %}#ffffff{% endif %};">
+                {{ result.short_answer }}
+            </div>
+            
+            {% for section, items in result.items() %}
+                {% if section != 'short_answer' and items %}
+                    <div class="result-section 
+                        {% if 'Danger' in section %}danger
+                        {% elif 'Medium-Risk' in section %}medium
+                        {% elif 'Low-Risk' in section %}low
+                        {% elif 'No-Risk' in section %}no-risk{% endif %}">
+                        <h3>{{ section }}</h3>
+                        <ul>
+                            {% for item in items %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <textarea rows="10" readonly>{{ result }}</textarea>
+        {% endif %}
+    {% endif %}
 
 </body>
 </html>

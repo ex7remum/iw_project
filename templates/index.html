@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ 'DocMeds' if lang == 'ru' else 'DocMeds' }}</title>
  
-    <!-- Подключение библиотеки jQuery для автодополнения -->
+    <!-- Подключение библиотек -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
- 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -20,115 +21,141 @@
             justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
-            padding-top: 50px;
-            background-color: #e6f4ea;
+            background: linear-gradient(135deg, #e0f7fa, #f0f9f4);
+            color: #333;
+            transition: all 0.3s ease;
         }
- 
+
         form {
             max-width: 100%;
             margin: 20px auto;
             text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
- 
+
         input[type="text"], textarea {
             width: 90%;
-            padding: 10px;
-            box-sizing: border-box;
+            padding: 15px;
             font-size: 16px;
             border: 1px solid #91c5a9;
+            border-radius: 8px;
             background-color: #f0f9f4;
             color: #4f6d5f;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
- 
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #4caf50;
+            outline: none;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+
         input[type="submit"], button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #91c5a9;
+            background-color: #4caf50;
             border: none;
             color: white;
+            border-radius: 50px;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
- 
-        textarea {
-            resize: none;
-            height: 40vh;
-            margin-bottom: 20px;
+
+        input[type="submit"]:hover, button:hover {
+            background-color: #388e3c;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(76, 175, 80, 0.3);
         }
- 
+
         h1, h2 {
-            text-align: center;
-            margin: 0;
             color: #4f6d5f;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
         }
- 
+
         h1 {
-            margin-bottom: 30px;
-        }
- 
-        .result-section {
+            font-size: 2.5em;
             margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
         }
- 
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .short-answer, .result-section {
+            width: 90%;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
         .short-answer {
             font-weight: bold;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 10px;
             margin-bottom: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            box-sizing: border-box;
         }
- 
-        .danger { background-color: #ffcccc; }
-        .medium { background-color: #ffd699; }
-        .low { background-color: #ffffcc; }
-        .no-risk { background-color: #ccffcc; }
- 
-        /* Для мобильных устройств */
+
+        .danger { background-color: #ffebee; }
+        .medium { background-color: #fff3e0; }
+        .low { background-color: #fffde7; }
+        .no-risk { background-color: #e8f5e9; }
+
+        .disclaimer {
+            font-size: 0.85em;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
             input[type="text"], textarea {
                 width: 100%;
-                padding-left: 15px;
-                padding-right: 15px;
             }
- 
+
             form {
                 padding-left: 15px;
                 padding-right: 15px;
             }
-        }
- 
-        /* Для маленьких экранов (мобильные портрет) */
-        @media (max-width: 480px) {
-            input[type="text"], textarea {
-                width: 85%;
-            }
- 
-            textarea {
-                height: 35vh;
-                padding-left: 10px;
-                padding-right: 10px;
+
+            input[type="submit"], button {
+                font-size: 14px;
+                padding: 10px 15px;
             }
         }
- 
-        /* Ограничение ширины для больших экранов */
+
         @media (min-width: 768px) {
             body {
                 max-width: 1200px;
                 margin: 0 auto;
             }
- 
+
             input[type="text"], textarea {
                 width: 70%;
             }
         }
     </style>
- 
+
     <script>
         $(function() {
             function extractLast(term) {
                 return term.split(',').pop().trim();
             }
- 
+
             $("#medicines").on("keydown", function(event) {
                 if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
@@ -172,32 +199,30 @@
 </head>
 <body>
     <h1>{{ 'DocMeds' }}</h1>
- 
+
     <!-- Кнопка смены языка -->
     <form method="POST">
         <button name="lang_switch" type="submit">
             {{ 'Сменить язык' if lang == 'en' else 'Switch Language' }}
         </button>
     </form>
- 
+
     <br>
- 
+
     <!-- Форма для ввода списка лекарств -->
     <form method="POST">
         <label for="medicines">{{ 'Введите хотя бы 2 лекарства через запятую:' if lang == 'ru' else 'Enter at least 2 medicines separated by commas:' }}</label>
         <input type="text" name="medicines" id="medicines" placeholder="{{ 'Введите лекарства' if lang == 'ru' else 'Enter medicines' }}">
- 
+
         <br><br>
- 
+
         <input type="submit" value="{{ 'Отправить' if lang == 'ru' else 'Submit' }}">
     </form>
- 
- 
+
     <h2>{{ 'Результат:' if lang == 'ru' else 'Result:' }}</h2>
- 
+
     {% if result %}
         {% if result is mapping %}
-
             {% set cleaned_short_answer = result.short_answer.replace('!', '') %}
             {% set color = '' %}
             
@@ -225,7 +250,7 @@
                 {% else %}#ffffff{% endif %};">
                 {{ display_text }}
             </div>
- 
+
             {% for section, items in result.items() %}
 
                 {% if section != 'short_answer' and items %}
@@ -264,6 +289,9 @@
             <textarea rows="10" readonly>{{ result }}</textarea>
         {% endif %}
     {% endif %}
- 
+
+    <div class="disclaimer">
+        {{ 'Для интерпретации результата необходимо обратиться к врачу.' if lang == 'ru' else 'For interpretation of the result, please consult a doctor.' }}
+    </div>
 </body>
 </html>

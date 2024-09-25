@@ -21,7 +21,7 @@
             justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #e0f7fa, #f0f9f4);
+            background: linear-gradient(135deg, #c7fddf, #f0f9f4);
             color: #333;
             transition: all 0.3s ease;
         }
@@ -30,7 +30,7 @@
             max-width: 100%;
             margin: 20px auto;
             text-align: center;
-            background-color: #fff;
+            background-color: #e5fdf1;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -42,7 +42,7 @@
             font-size: 16px;
             border: 1px solid #91c5a9;
             border-radius: 8px;
-            background-color: #f0f9f4;
+            background-color: #e5fdf1;
             color: #4f6d5f;
             margin-bottom: 20px;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -55,12 +55,12 @@
         }
 
         input[type="submit"], button {
-            padding: 10px 20px;
+            padding: 8px 26px;
             font-size: 16px;
             background-color: #4caf50;
             border: none;
             color: white;
-            border-radius: 50px;
+            border-radius: 4px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
             transition: background-color 0.3s ease, transform 0.2s ease;
@@ -124,7 +124,9 @@
         /* Адаптивность */
         @media (max-width: 768px) {
             input[type="text"], textarea {
-                width: 100%;
+                width: 90%;
+                margin: 30px auto;
+                padding: 15px;
             }
 
             form {
@@ -141,12 +143,67 @@
         @media (min-width: 768px) {
             body {
                 max-width: 1200px;
+                width: 90%;
                 margin: 0 auto;
             }
 
             input[type="text"], textarea {
-                width: 70%;
+                width: 100%;
+                box-sizing: border-box;
             }
+        }
+        .contact-container {
+            display: flex;
+            flex-direction: row; /* Вертикальная ориентация */
+            gap: 1.5rem; /* Промежуток между кубиками */
+            margin-top: 5cm; /* Сдвиг вниз */
+            align-items: center; /* Центрирование по горизонтали */
+        }
+        .contact-box {
+            width: 100px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #a8d2ff; /* Цвет фона */
+            color: white; /* Цвет текста */
+            text-align: center;
+            text-decoration: none; /* Убираем подчеркивание у ссылок */
+            border-radius: 8px; /* Скругленные углы */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень */
+            transition: background-color 0.3s; /* Плавный переход цвета */
+        }
+        .contact-box:hover {
+            background-color: #4da3ff; /* Цвет при наведении */
+        }
+        .contact-form {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #28a745; /* Цвет фона для формы */
+            color: white; /* Цвет текста */
+            border-radius: 8px; /* Скругленные углы */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень */
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 90%;
+            margin-top: 5px;
+            padding: 5px;
+            border: none;
+            border-radius: 4px;
+        }
+        .contact-form button {
+            margin-top: 5px;
+            padding: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: white;
+            color: #28a745;
+            cursor: pointer;
         }
     </style>
 
@@ -293,5 +350,12 @@
     <div class="disclaimer">
         {{ 'Для интерпретации результата необходимо обратиться к врачу.' if lang == 'ru' else 'For interpretation of the result, please consult a doctor.' }}
     </div>
+
+    <div class="contact-container">
+        <a href="mailto:yurii.a.potapov@gmail.com" class="contact-box">Email</a>
+        <a href="https://t.me/yu432" target="_blank" class="contact-box">Telegram</a>
+        <a href="https://wa.me/79274677995" target="_blank" class="contact-box">WhatsApp</a>
+    </div>
+    
 </body>
 </html>

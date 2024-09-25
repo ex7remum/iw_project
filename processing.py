@@ -39,7 +39,7 @@ class DrugInteractionProcessor:
                             low-risk, no-risk interaction. First section is about short one-sentence summary of following information like (write to 
                            the end of this sentence color in braces like red, yellow and green which represents treat level -- USE ONE WORD WITH symbols like !yellow!): ok treatment or dangerous
                             treatment. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named
-                            duplication shortly. Use $ symbol as separator between every section:\n{text}'''}],
+                            duplication shortly. Use $ symbol as separator between every section it's very important to use $ symbol as separator!:\n{text}'''}],
             )
             return chat_completion.choices[0].message.content
         

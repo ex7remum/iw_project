@@ -6,6 +6,7 @@ import requests
 from deep_translator import GoogleTranslator
 from functools import lru_cache
 import json 
+from openai import OpenAI
 import axios  # Make sure to install this: pip install axios
 #pip install lxml before works
 
@@ -29,30 +30,14 @@ class DrugInteractionProcessor:
         return cleantext
 
 
-    @staticmethod
-    def summarize_with_llama(text, language='en'):
-        api_key = "SG_a5e178f46ae9bdb4"
-        url = "https://api.segmind.com/v1/llama-v3p1-405b-instruct"
-
-        if language == 'en':
-            language = 'english'
-        else:
-            language = 'russian'
-            
-        data = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"Summarize the following text in {language}, use bullet points and don't use bold letters, start answering with summary, write only important information about interactions:\n{text}"
-                }
-            ]
-        }
-
+    def summarize_with_llama(openai, text, language='en'):
         try:
-            response = requests.post(url, json=data, headers={'x-api-key': api_key})
-            response.raise_for_status()
-            #print(response.json())
-            return response.json()['choices'][0]['message']['content']
+            chat_completion = openai.chat.completions.create(
+                model="meta-llama/Meta-Llama-3.1-405B-Instruct",
+                messages=[{"role": "user", "content": f"Summarize the following text in {language}, use bullet points and don't use bold letters, start answering with summary, write only important information about interactions:\n{text}"}],
+            )
+            return chat_completion.choices[0].message.content
+        
         except requests.RequestException as e:
             print(f"Error occurred while calling Llama API: {e}")
             return None
@@ -109,7 +94,7 @@ class DrugInteractionProcessor:
             return ['Failed to process drugs']
             
 
-    def processing(self, medicine_list, lang, use_summarizer=False):
+    def processing(self, openai, medicine_list, lang, use_summarizer=False):
         medicine_list = [med.strip() for med in set(medicine_list) if med.strip()]
         medicine_list_ids = self.parse_items_to_ids(medicine_list, lang)
 
@@ -137,7 +122,7 @@ class DrugInteractionProcessor:
             
             result_message = f"Вы выбрали следующие лекарства: {', '.join(medicine_list)}\n{all_info_string}"
             if use_summarizer:
-                summary = self.summarize_with_llama(all_info_string, language='ru')
+                summary = self.summarize_with_llama(openai, all_info_string, language='ru')
                 if summary:
                     result_message = summary
                 else:
@@ -147,7 +132,7 @@ class DrugInteractionProcessor:
         
         result_message = f"You selected the following medicines: {', '.join(medicine_list)}\n{'\n\n'.join(all_info)}"
         if use_summarizer:
-            summary = self.summarize_with_llama(result_message)
+            summary = self.summarize_with_llama(openai, result_message)
             if summary:
                 result_message = summary
             else:

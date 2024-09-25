@@ -8,6 +8,7 @@ import os
 from trie import TrieVisualizer
 from scout_apm.flask import ScoutApm
 import argparse
+from openai import OpenAI
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -44,7 +45,11 @@ def download_csv():
 download_csv()  
 
 processor = DrugInteractionProcessor()  # Instantiate the processor once
-use_summ_flag = False
+use_summ_flag = True
+openai = OpenAI(
+    api_key="6LBCqQ2YY4blWVGmItljDIuKBmwsUKyR",
+    base_url="https://api.deepinfra.com/v1/openai",
+)
 #processor.precompute_all_pairs()
 
 
@@ -80,7 +85,7 @@ def index():
 
             valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
            
-            result = processor.processing(valid_medicines, session['lang'], use_summarizer=use_summ_flag)
+            result = processor.processing(openai, valid_medicines, session['lang'], use_summarizer=use_summ_flag)
 
     return render_template('index.html', result=result, lang=session['lang'])
 
@@ -114,7 +119,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                     prog='DocMeds',
                     description='Check drug interaction')
-    parser.add_argument('-u', '--use_summ', default='no')
+    parser.add_argument('-u', '--use_summ', default='yes')
     args = parser.parse_args()
 
     if args.use_summ == 'no':
@@ -122,4 +127,4 @@ if __name__ == '__main__':
     else:
         use_summ_flag = True
 
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)

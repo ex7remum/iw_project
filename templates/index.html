@@ -336,6 +336,8 @@
     {% if result %}
         {% if result is mapping %}
             {% set cleaned_short_answer = result.short_answer.replace('!', '') %}
+            {% set cleaned_short_answer = cleaned_short_answer.replace('(', '') %}
+            {% set cleaned_short_answer = cleaned_short_answer.replace(')', '') %}
             {% set color = '' %}
             
             {% if 'red' in cleaned_short_answer.lower() %}
@@ -346,6 +348,18 @@
                 {% set color = 'yellow' %}
             {% elif 'green' in cleaned_short_answer.lower() %}
                 {% set color = 'green' %}
+            {% elif 'оранжевый' in cleaned_short_answer.lower() %}
+                {% set color = 'оранжевый' %}
+            {% elif 'желтый' in cleaned_short_answer.lower() %}
+                {% set color = 'желтый' %}
+            {% elif 'жёлтый' in cleaned_short_answer.lower() %}
+                {% set color = 'жёлтый' %}
+            {% elif 'красный' in cleaned_short_answer.lower() %}
+                {% set color = 'красный' %}
+            {% elif 'зеленый' in cleaned_short_answer.lower() %}
+                {% set color = 'зеленый' %}
+            {% elif 'зелёный' in cleaned_short_answer.lower() %}
+                {% set color = 'зелёный' %}
             {% endif %}
         
             {% set display_text = cleaned_short_answer.replace(color, '') %}
@@ -355,10 +369,10 @@
             {% endif %}
 
             <div class="short-answer" style="background-color: 
-                {% if 'red' in result.short_answer.lower() %}#ffcccc
-                {% elif 'orange' in result.short_answer.lower() %}#ffd699
-                {% elif 'yellow' in result.short_answer.lower() %}#ffffcc
-                {% elif 'green' in result.short_answer.lower() %}#ccffcc
+                {% if 'red' in result.short_answer.lower() or 'красный' in result.short_answer.lower() %}#ffcccc
+                {% elif 'orange' in result.short_answer.lower() or 'оранжевый' in result.short_answer.lower() %}#ffd699
+                {% elif 'yellow' in result.short_answer.lower() or 'желтый' in result.short_answer.lower() or 'жёлтый' in result.short_answer.lower() %}#ffffcc
+                {% elif 'green' in result.short_answer.lower() or 'зеленый' in result.short_answer.lower() or 'зелёный' in result.short_answer.lower()%}#ccffcc
                 {% else %}#ffffff{% endif %};">
                 {{ display_text }}
             </div>
@@ -369,7 +383,7 @@
 
                     {% set risk = section %}
 
-                    {% if 'Danger' in section and lang == 'ru' %}
+                    {% if 'Dangerous' in section and lang == 'ru' %}
                         {% set risk = 'Опасные взаимодействия' %}
                     {% elif 'Medium' in section and lang == 'ru' %}
                         {% set risk = 'Умеренная опасность' %}
@@ -382,10 +396,10 @@
                     {% endif %}
 
                     <div class="result-section 
-                        {% if 'Danger' in section %}danger
-                        {% elif 'Medium' in section %}medium
-                        {% elif 'Low' in section %}low
-                        {% elif 'No' in section %}no-risk{% endif %}">
+                        {% if 'Dangerous' in section or 'Опасные' in section %}danger
+                        {% elif 'Medium' in section or 'средн' in section %}medium
+                        {% elif 'Low' in section or 'низк' in section %}low
+                        {% elif 'No' in section or 'без риск' in section %}no-risk{% endif %}">
 
 
                         <h3>{{ risk }}</h3>
@@ -403,7 +417,7 @@
     {% endif %}
 
     <div class="disclaimer">
-        {{ 'Для интерпретации результата необходимо обратиться к врачу.' if lang == 'ru' else 'For interpretation of the result, please consult a doctor.' }}
+        {{ 'Пожалуйста, не занимайтесь самолечением. В случае проблем со здоровьем, обратитесь к врачу.' if lang == 'ru' else 'Please, do not self-medicate. In case of any health-related issues contact the doctor.' }}
     </div>
 
     <div class="contact-container">

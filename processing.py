@@ -63,12 +63,20 @@ class DrugInteractionProcessor:
                 model="accounts/fireworks/models/llama-v3p1-405b-instruct",
                 messages=[{
                     "role": "user",
-                    "content": f'''Summarize the following text in {language}, use bullet points, start answering with summary,
-                            write only important information about interactions. Output should be strictly formatted by 5 parts: summary result, danger interaction, medium-risk interaction,
-                            low-risk, no-risk interaction. First section is about short one-sentence summary of following information like (write to 
-                           the end of this sentence color in braces like red, yellow and green which represents treat level -- USE ONE WORD WITH symbols like !yellow!): ok treatment or dangerous
-                            treatment. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named
-                            duplication shortly. Use $ symbol as separator between every section it's very important to use $ symbol as separator -- ITS REALLY STRICT REQUIREMENT FOR PARSING! After every section name use symbol : it's strictly for parsing!!!:\n{text}''',
+                    "content": f'''Summarize the following text in {language}, use bullet points, start answering with summary. 
+Write only important information about interactions. Output should be strictly formatted in 5 parts: 
+1. Summary: a one-sentence summary of the information like (write to the end of this sentence 
+the color in braces like red, yellow, and green which represents the threat level -- USE ONE WORD WITH 
+symbols like !yellow!). 
+2. Dangerous Interaction: write about the dangerous interactions. 
+3. Medium-Risk Interaction: write about medium-risk interactions. 
+4. Low-Risk Interaction: write about low-risk interactions. 
+5. No-Risk Interaction: write about interactions with no risk.
+6. Duplication: write about duplicative effects of medicines.
+
+Each section should be separated by a $ symbol for parsing. After every section name, use a colon ":" 
+for parsing. Duplication section should be short. Do not write about consulting doctors, as this will 
+be done manually. USE ONLY {language} LANGUAGE IN RESPONSE, SECTIONS AND COLOR NAMES SHOULD BE IN ENGLISH:\n{text}''',
                 }],
             )
             print(response)

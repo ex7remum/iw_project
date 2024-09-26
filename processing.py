@@ -11,6 +11,7 @@ import axios
 from trie import timeit
 from concurrent.futures import ThreadPoolExecutor
 import logging
+from fireworks.client import Fireworks
 
 
 class DrugInteractionProcessor:
@@ -33,22 +34,44 @@ class DrugInteractionProcessor:
         return cleantext
 
 
+    # @timeit
+    # def summarize_with_llama(self, openai, text, language='en'):
+    #     try:
+    #         chat_completion = openai.chat.completions.create(
+    #             model="meta-llama/Meta-Llama-3.1-70B-Instruct",
+    #             messages=[{"role": "user", "content": f'''Summarize the following text in {language}, use bullet points, start answering with summary,
+    #                         write only important information about interactions. Output should be strictly formatted by 5 parts: summary result, danger interaction, medium-risk interaction,
+    #                         low-risk, no-risk interaction. First section is about short one-sentence summary of following information like (write to 
+    #                        the end of this sentence color in braces like red, yellow and green which represents treat level -- USE ONE WORD WITH symbols like !yellow!): ok treatment or dangerous
+    #                         treatment. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named
+    #                         duplication shortly. Use $ symbol as separator between every section it's very important to use $ symbol as separator -- ITS REALLY STRICT REQUIREMENT FOR PARSING! After every section name use symbol : it's strictly for parsing!!!:\n{text}'''}],
+    #             temperature=0.2,  # Lower value for focused output
+    #             n=1,               # Request only one response for faster generation
+    #             top_p=1
+    #         )
+    #         return chat_completion.choices[0].message.content
+        
+    #     except:
+    #         logging.info(f"Error occurred while calling Llama API")
+    #         return None
+
+
     @timeit
-    def summarize_with_llama(self, openai, text, language='en'):
+    def summarize_with_llama(self, client, text, language='en'):
         try:
-            chat_completion = openai.chat.completions.create(
-                model="meta-llama/Meta-Llama-3.1-70B-Instruct",
-                messages=[{"role": "user", "content": f'''Summarize the following text in {language}, use bullet points, start answering with summary,
+            response = client.chat.completions.create(
+                model="accounts/fireworks/models/llama-v3p1-405b-instruct",
+                messages=[{
+                    "role": "user",
+                    "content": f'''Summarize the following text in {language}, use bullet points, start answering with summary,
                             write only important information about interactions. Output should be strictly formatted by 5 parts: summary result, danger interaction, medium-risk interaction,
                             low-risk, no-risk interaction. First section is about short one-sentence summary of following information like (write to 
                            the end of this sentence color in braces like red, yellow and green which represents treat level -- USE ONE WORD WITH symbols like !yellow!): ok treatment or dangerous
                             treatment. Don't write about consulting doctors, we will push user to this manually. Also write paragraph named
-                            duplication shortly. Use $ symbol as separator between every section it's very important to use $ symbol as separator -- ITS REALLY STRICT REQUIREMENT FOR PARSING! After every section name use symbol : it's strictly for parsing!!!:\n{text}'''}],
-                temperature=0.2,  # Lower value for focused output
-                n=1,               # Request only one response for faster generation
-                top_p=1
+                            duplication shortly. Use $ symbol as separator between every section it's very important to use $ symbol as separator -- ITS REALLY STRICT REQUIREMENT FOR PARSING! After every section name use symbol : it's strictly for parsing!!!:\n{text}''',
+                }],
             )
-            return chat_completion.choices[0].message.content
+            return response.choices[0].message.content
         
         except:
             logging.info(f"Error occurred while calling Llama API")
@@ -159,7 +182,7 @@ class DrugInteractionProcessor:
 
             
 
-    def processing(self, openai, medicine_list, lang, use_summarizer=False):
+    def processing(self, client, medicine_list, lang, use_summarizer=False):
         medicine_list = [med.strip() for med in set(medicine_list) if med.strip()]
         medicine_list_ids = self.parse_items_to_ids(medicine_list, lang)
 
@@ -204,7 +227,7 @@ class DrugInteractionProcessor:
         if use_summarizer:
 
             logging.info('Started summarizing')
-            summary = self.summarize_with_llama(openai, result_message)
+            summary = self.summarize_with_llama(client, result_message)
             logging.info('Ended summarizing')
 
             if summary:

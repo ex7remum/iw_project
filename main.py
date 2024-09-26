@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_session import Session
 
+from fireworks.client import Fireworks
 from processing import DrugInteractionProcessor
 from trie import Trie
 import pandas as pd
@@ -46,10 +47,12 @@ logger = logging.getLogger(__name__)
 
 processor = DrugInteractionProcessor()  # Instantiate the processor once
 use_summ_flag = True
-openai = OpenAI(
-    api_key="6LBCqQ2YY4blWVGmItljDIuKBmwsUKyR",
-    base_url="https://api.deepinfra.com/v1/openai",
-)
+#openai = OpenAI(
+#    api_key="iDBzr5fb4hdSxT3iNcrqoFfihjZ7PK9D",
+#    base_url="https://llama3-1-70b.lepton.run/api/v1/",
+#)
+
+client = Fireworks(api_key="fw_3ZMX9uLmrm2PNJyAuCVPypHc")
 
 
 # Function to load medicines from CSV
@@ -85,7 +88,7 @@ def index():
 
             valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
            
-            result = processor.processing(openai, valid_medicines, session['lang'], use_summarizer=use_summ_flag)
+            result = processor.processing(client, valid_medicines, session['lang'], use_summarizer=use_summ_flag)
 
     return render_template('index.html', result=result, lang=session['lang'])
 

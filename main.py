@@ -9,14 +9,13 @@ from trie import TrieVisualizer
 from scout_apm.flask import ScoutApm
 import argparse
 from openai import OpenAI
+import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-# Initialize the Trie for medicines
-#medicine_trie = Trie(session['lang'])
 
 def download_csv():
     url = "https://docs.google.com/spreadsheets/d/1NmeYrISaCTMogoEGRXgL8A7hvcfgfB8hQ_PG4gYPKcM/export?format=csv"
@@ -42,7 +41,8 @@ def download_csv():
         remote_df.to_csv('medicines.csv', sep=';', index=True)
 
 
-download_csv()  
+download_csv()
+logger = logging.getLogger(__name__)
 
 processor = DrugInteractionProcessor()  # Instantiate the processor once
 use_summ_flag = True
@@ -50,7 +50,6 @@ openai = OpenAI(
     api_key="6LBCqQ2YY4blWVGmItljDIuKBmwsUKyR",
     base_url="https://api.deepinfra.com/v1/openai",
 )
-#processor.precompute_all_pairs()
 
 
 # Function to load medicines from CSV
@@ -62,6 +61,7 @@ def load_medicines(lang):
     if lang == 'ru':
         return list(map(lambda x: x.lower(), drugs_data['Drug_name_rus'].values.tolist()))
     return list(map(lambda x: x.lower(), drugs_data['Drug_name_en'].values.tolist()))
+
 
 # Start page
 @app.route('/', methods=['GET', 'POST'])
@@ -86,9 +86,9 @@ def index():
             valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
            
             result = processor.processing(openai, valid_medicines, session['lang'], use_summarizer=use_summ_flag)
-            print(result)
 
     return render_template('index.html', result=result, lang=session['lang'])
+
 
 # Autocomplete route
 @app.route('/autocomplete', methods=['GET'])
@@ -113,15 +113,12 @@ def autocomplete():
 
 
 if __name__ == '__main__':
-    #app.config["SCOUT_MONITOR"] = True
-    #app.config["SCOUT_KEY"] = "[c1V7BzRYPDMnjYvn3aFF]" 
-    #app.config["SCOUT_NAME"] = "A FRIENDLY NAME FOR YOUR APP"
-    #ScoutApm(app)
     parser = argparse.ArgumentParser(
                     prog='DocMeds',
                     description='Check drug interaction')
     parser.add_argument('-u', '--use_summ', default='yes')
     args = parser.parse_args()
+    logging.basicConfig(filename='myapp.log', level=logging.INFO)
 
     if args.use_summ == 'no':
         use_summ_flag = False

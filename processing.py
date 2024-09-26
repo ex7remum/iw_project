@@ -7,14 +7,17 @@ from deep_translator import GoogleTranslator
 from functools import lru_cache
 import json 
 from openai import OpenAI
-import axios  # Make sure to install this: pip install axios
-#pip install lxml before works
+import axios
+from trie import timeit
+from concurrent.futures import ThreadPoolExecutor
+import logging
+
 
 class DrugInteractionProcessor:
     def __init__(self):
         # Load the CSV data once and reuse it
         self.drugs_data = pd.read_csv('medicines.csv', sep=';')
-        self.drugs_data= self.drugs_data.applymap(lambda s:s.lower() if type(s) == str else s)
+        self.drugs_data = self.drugs_data.applymap(lambda s:s.lower() if type(s) == str else s)
     
 
     @staticmethod
@@ -30,6 +33,7 @@ class DrugInteractionProcessor:
         return cleantext
 
 
+    @timeit
     def summarize_with_llama(self, openai, text, language='en'):
         try:
             chat_completion = openai.chat.completions.create(
@@ -43,8 +47,8 @@ class DrugInteractionProcessor:
             )
             return chat_completion.choices[0].message.content
         
-        except requests.RequestException as e:
-            print(f"Error occurred while calling Llama API: {e}")
+        except:
+            logging.info(f"Error occurred while calling Llama API")
             return None
     
 
@@ -57,7 +61,7 @@ class DrugInteractionProcessor:
                 else:
                     ids.append(self.drugs_data[self.drugs_data["Drug_name_rus"] == drug]['Id'].iloc[0])
             except IndexError:
-                print(f"Drug {drug} not found.")
+                logging.info(f"Drug {drug} not found.")
         return ids
     
 
@@ -95,75 +99,116 @@ class DrugInteractionProcessor:
 
             return info
         except requests.RequestException as e:  # Handle request exceptions
-            print(f"Error occurred: {e}")
-            return ['Failed to process drugs']
+            logging.info(f"Error occurred: {e}")
+            return 'Failed to process drugs'
+        
+
+    @timeit
+    def parallel_create_proper_responses(self, medicine_list, medicine_list_ids):
+        all_info = []
+        
+        with ThreadPoolExecutor() as executor:
+            for i in range(len(medicine_list_ids)):
+                for j in range(i, len(medicine_list_ids)):
+                    info_from_drugs = self.get_info_from_drugs_com(medicine_list_ids[i], medicine_list_ids[j])
+                    
+                    # Prepare a list of arguments for parallel processing
+                    futures = []
+                    for k, info in enumerate(info_from_drugs):
+                        if k == 0 or k + 1 == len(info_from_drugs):
+                            future = executor.submit(self.create_proper_response, info, medicine_list[i], medicine_list[j])
+                        else:
+                            future = executor.submit(self.create_proper_response, info, medicine_list[i], 'food')
+                        
+                        futures.append(future)
+
+                    # Collect the results from each future
+                    final_response = ''.join([future.result() for future in futures])
+                    
+                    all_info.append(final_response)
+        
+        return all_info
         
 
     def parse_summary(self, summary):
-        summary = re.sub(r"\*", "", summary)
-        summary = re.sub(r"•", "", summary)
-        summary = summary.split('$')
-        print(summary)
+        try:
+            summary = re.sub(r"\*", "", summary)
+            summary = re.sub(r"•", "", summary)
+            summary = summary.split('$')
 
-        result = {}
+            result = {}
+            summary = [item for item in summary if item != '']
 
-        # Extract the short answer (first line)
-        result['short_answer'] = summary[0]
+            # Extract the short answer (first line)
+            result['short_answer'] = summary[0]
 
-        for i, item in enumerate(summary):
-            if not i:
-                continue
-            item = item.strip()
-            col_pos = re.search(':', item).start()
-            current_section = item[:col_pos] # Remove the colon
-            result[item[:col_pos]] = item[col_pos + 1:]
-        
-        return result
+            for i, item in enumerate(summary):
+                if not i:
+                    continue
+                item = item.strip()
+                col_pos = re.search(':', item).start()
+                current_section = item[:col_pos] # Remove the colon
+                result[item[:col_pos]] = item[col_pos + 1:]
+            return result
+        except:
+            logging.info('Summary in a wrong format')
+            return f'Error occurred. Please try later'
+
             
 
     def processing(self, openai, medicine_list, lang, use_summarizer=False):
         medicine_list = [med.strip() for med in set(medicine_list) if med.strip()]
         medicine_list_ids = self.parse_items_to_ids(medicine_list, lang)
 
-        all_info = []
         if len(medicine_list_ids) < 2:
             return "please choose at least 2 medicines"
+        
+        if len(medicine_list_ids) > 4:
+            return "please choose at most 4 drugs. our resources are limited by now T_T "
 
-        for i in range(len(medicine_list_ids)):
-            for j in range(i, len(medicine_list_ids)):
-                info_from_drugs = self.get_info_from_drugs_com(medicine_list_ids[i], medicine_list_ids[j])
-                final_response = ''
-                for k, info in enumerate(info_from_drugs):
-                    if k == 0 or k + 1 == len(info_from_drugs):
-                        response = self.create_proper_response(info, medicine_list[i], medicine_list[j])
-                    else:
-                        response = self.create_proper_response(info, medicine_list[i], 'food')
-                    final_response += response
-                all_info.append(final_response)
+        logging.info('Started getting info')
+
+        try:
+            all_info = self.parallel_create_proper_responses(medicine_list, medicine_list_ids)
+            logging.info('Ended getting info')
+        except:
+            logging.info('Error during getting info')
+            return "Some error occured. Please, try later"
+        
 
         if lang == 'ru':
             all_info_string = ''
             for eng_info in all_info:
-                #translated_info = self.translate_deep_translate(eng_info)
                 all_info_string += eng_info + '\n\n'
             
             result_message = f"Вы выбрали следующие лекарства: {', '.join(medicine_list)}\n{all_info_string}"
             if use_summarizer:
+
+                logging.info('Started summarizing')
                 summary = self.summarize_with_llama(openai, all_info_string, language='ru')
+                logging.info('Ended summarizing')
+
                 if summary:
                     result_message = self.parse_summary(summary)
+                    logging.info(result_message)
                 else:
-                    result_message = {'error': f'Произошла ошибка. Пожалуйста, попробуйте позже'}
+                    logging.info('Error during summarization in rus')
+                    result_message = f'Произошла ошибка. Пожалуйста, попробуйте позже'
 
             return result_message
         
         result_message = f"You selected the following medicines: {', '.join(medicine_list)}\n{'\n\n'.join(all_info)}"
         if use_summarizer:
+
+            logging.info('Started summarizing')
             summary = self.summarize_with_llama(openai, result_message)
+            logging.info('Ended summarizing')
+
             if summary:
-                print(summary)
                 result_message = self.parse_summary(summary)
+                logging.info(result_message)
             else:
-                result_message = {'error': f'Error occurred. Please try later'}
+                logging.info('Error during summarization')
+                result_message = f'Error occurred. Please try later'
 
         return result_message

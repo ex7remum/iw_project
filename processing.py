@@ -211,7 +211,7 @@ class DrugInteractionProcessor:
             if use_summarizer:
 
                 logging.info('Started summarizing')
-                summary = self.summarize_with_llama(openai, all_info_string, language='ru')
+                summary = self.summarize_with_llama(client, all_info_string, language='ru')
                 logging.info('Ended summarizing')
 
                 if summary:

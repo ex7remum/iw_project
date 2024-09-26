@@ -257,15 +257,6 @@
 <body>
     <h1>{{ 'DocMeds' }}</h1>
 
-    <!-- Кнопка смены языка -->
-    <form method="POST">
-        <button name="lang_switch" type="submit">
-            {{ 'Сменить язык' if lang == 'en' else 'Switch Language' }}
-        </button>
-    </form>
-
-    <br>
-
     <!-- Форма для ввода списка лекарств -->
     <form method="POST">
         <label for="medicines">{{ 'Введите хотя бы 2 лекарства через запятую:' if lang == 'ru' else 'Enter at least 2 medicines separated by commas:' }}</label>

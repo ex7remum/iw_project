@@ -226,25 +226,55 @@
             background-color: #4caf50;
             color: white;
         }
+        #medicines {
+        width: 100%;
+        box-sizing: border-box;
+        }
+
+        .selected-medicine {
+            display: inline-block;
+            background-color: #e5fdf1;
+            border: 1px solid #4caf50;
+            border-radius: 20px;
+            padding: 5px 30px 5px 10px;
+            margin: 5px;
+            position: relative;
+        }
+
+        .remove-medicine {
+            cursor: pointer;
+            color: #ff0000;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
     </style>
 
     <script>
         $(function() {
-            function extractLast(term) {
-                return term.split(',').pop().trim();
+            var selectedMedicines = [];
+
+            function updateMedicineList() {
+                $('#medicine-list').val(selectedMedicines.join(', '));
+                $('#selected-medicines').html(selectedMedicines.map(function(medicine) {
+                    return '<div class="selected-medicine">' + medicine + 
+                        '<span class="remove-medicine" data-medicine="' + medicine + '">×</span></div>';
+                }).join(''));
             }
 
-            $("#medicines").on("keydown", function(event) {
-                if (event.key === "," || event.keyCode === $.ui.keyCode.TAB) {
-                    event.preventDefault();
-                }
-            }).autocomplete({
+            $("#medicines").autocomplete({
                 source: function(request, response) {
                     $.ajax({
                         url: "/autocomplete",
-                        data: {
-                            q: extractLast(request.term)
-                        },
+                        data: { q: request.term },
                         success: function(data) {
                             if (data.length === 1 && data[0].startsWith("No medicines")) {
                                 alert(data[0]);
@@ -254,22 +284,29 @@
                         }
                     });
                 },
-                search: function() {
-                    var term = extractLast(this.value);
-                    return term.length >= 2;
-                },
-                focus: function() {
-                    return false;
-                },
+                minLength: 2,
                 select: function(event, ui) {
-                    var terms = this.value.replace(/\s/g, "").split(',');
-                    terms.pop();
-                    terms.push(ui.item.value);
-                    this.value = terms.join(", ");
-                    if (this.value) {
-                        this.value += ", ";
+                    if (selectedMedicines.indexOf(ui.item.value) === -1) {
+                        selectedMedicines.push(ui.item.value);
+                        updateMedicineList();
                     }
+                    this.value = '';
                     return false;
+                }
+            });
+
+            $(document).on('click', '.remove-medicine', function() {
+                var medicineToRemove = $(this).data('medicine');
+                selectedMedicines = selectedMedicines.filter(function(medicine) {
+                    return medicine !== medicineToRemove;
+                });
+                updateMedicineList();
+            });
+
+            $('form').on('submit', function(e) {
+                if (selectedMedicines.length < 2) {
+                    e.preventDefault();
+                    alert('{{ "Пожалуйста, выберите хотя бы 2 лекарства" if lang == "ru" else "Please choose at least 2 medicines" }}');
                 }
             });
         });
@@ -286,11 +323,11 @@
 
     <!-- Форма для ввода списка лекарств -->
     <form method="POST">
-        <label for="medicines">{{ 'Введите хотя бы 2 лекарства через запятую:' if lang == 'ru' else 'Enter at least 2 medicines separated by commas:' }}</label>
-        <input type="text" name="medicines" id="medicines" placeholder="{{ 'Введите лекарства' if lang == 'ru' else 'Enter medicines' }}">
-
+        <label for="medicines">{{ 'Введите хотя бы 2 лекарства:' if lang == 'ru' else 'Enter at least 2 medicines:' }}</label>
+        <div id="selected-medicines"></div>
+        <input type="text" name="medicines" id="medicines" placeholder="{{ 'Введите лекарство' if lang == 'ru' else 'Enter a medicine' }}">
+        <input type="hidden" name="medicine-list" id="medicine-list">
         <br><br>
-
         <input type="submit" value="{{ 'Отправить' if lang == 'ru' else 'Submit' }}">
     </form>
 

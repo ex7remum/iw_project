@@ -92,7 +92,9 @@ def index():
     
     result = ''
     if request.method == 'POST':
-        medicines_input = list(map(lambda x: x.strip().lower(), request.form.get('medicines').split(',')))
+        #print('Kek')
+        #print(request.form.get('medicine-list'))
+        medicines_input = list(map(lambda x: x.strip().lower(), request.form.get('medicine-list').split(',')))
         valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
         result = processor.processing(client, valid_medicines, lang, use_summarizer=use_summ_flag)
 

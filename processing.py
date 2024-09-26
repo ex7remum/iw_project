@@ -71,6 +71,7 @@ class DrugInteractionProcessor:
                             duplication shortly. Use $ symbol as separator between every section it's very important to use $ symbol as separator -- ITS REALLY STRICT REQUIREMENT FOR PARSING! After every section name use symbol : it's strictly for parsing!!!:\n{text}''',
                 }],
             )
+            print(response)
             return response.choices[0].message.content
         
         except:
@@ -187,10 +188,10 @@ class DrugInteractionProcessor:
         medicine_list_ids = self.parse_items_to_ids(medicine_list, lang)
 
         if len(medicine_list_ids) < 2:
-            return "please choose at least 2 medicines"
+            return "Please choose at least 2 medicines" if lang == 'en' else "Пожалуйста, выберите хотя бы 2 лекарства"
         
         if len(medicine_list_ids) > 4:
-            return "please choose at most 4 drugs. our resources are limited by now T_T "
+            return "Please choose at most 4 drugs. Our resources are limited by now." if lang == 'en' else "Пожалуйста, введите максимум 4 лекарства. Наши ресурсы пока ограничены."
 
         logging.info('Started getting info')
 
@@ -199,7 +200,7 @@ class DrugInteractionProcessor:
             logging.info('Ended getting info')
         except:
             logging.info('Error during getting info')
-            return "Some error occured. Please, try later"
+            return "Some error occured. Please, try later" if lang == 'en' else "Произошла ошибка. Попробуйте еще раз"
         
 
         if lang == 'ru':

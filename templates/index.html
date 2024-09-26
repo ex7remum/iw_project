@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="{{ 'ru' if lang == 'ru' else 'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -205,6 +204,28 @@
             color: #28a745;
             cursor: pointer;
         }
+        .language-switch {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .language-button {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 5px;
+            font-size: 14px;
+            color: #4f6d5f;
+            background-color: #e5fdf1;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .language-button:hover, .language-button.active {
+            background-color: #4caf50;
+            color: white;
+        }
     </style>
 
     <script>
@@ -256,6 +277,12 @@
 </head>
 <body>
     <h1>{{ 'DocMeds' }}</h1>
+
+
+    <div class="language-switch">
+        <a href="{{ url_for('set_language', lang='en') }}" class="language-button {% if lang == 'en' %}active{% endif %}">English</a>
+        <a href="{{ url_for('set_language', lang='ru') }}" class="language-button {% if lang == 'ru' %}active{% endif %}">Русский</a>
+    </div>
 
     <!-- Форма для ввода списка лекарств -->
     <form method="POST">

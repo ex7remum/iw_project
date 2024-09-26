@@ -68,35 +68,35 @@ def load_medicines(lang):
         return list(map(lambda x: x.lower(), drugs_data['Drug_name_rus'].values.tolist()))
     return list(map(lambda x: x.lower(), drugs_data['Drug_name_en'].values.tolist()))
 
-
 @app.route('/choose_language')
 def choose_language():
     return render_template('choose_language.html')
+
+@app.route('/set_language')
+def set_language():
+    lang = request.args.get('lang')
+    if lang in ['en', 'ru']:
+        session['lang'] = lang
+    return redirect(url_for('index'))
 
 
 # Start page
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # Set default language
-    lang = request.args.get('lang')
-    if lang:
-        session['lang'] = lang
+    print("СЕССИЯ", session)
     if 'lang' not in session:
         return redirect(url_for('choose_language'))
-    #medicine_trie = Trie(session['lang'])  # this causes the session error
-
-    medicines = load_medicines(session['lang'])
+    
+    lang = session['lang']
+    medicines = load_medicines(lang)
     
     result = ''
     if request.method == 'POST':
-        # Input processing
         medicines_input = list(map(lambda x: x.strip().lower(), request.form.get('medicines').split(',')))
-
         valid_medicines = [med.strip().lower() for med in medicines_input if med.strip() in medicines]
-        
-        result = processor.processing(client, valid_medicines, session['lang'], use_summarizer=use_summ_flag)
+        result = processor.processing(client, valid_medicines, lang, use_summarizer=use_summ_flag)
 
-    return render_template('index.html', result=result, lang=session['lang'])
+    return render_template('index.html', result=result, lang=lang)
 
 
 # Autocomplete route

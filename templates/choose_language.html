@@ -43,8 +43,8 @@
 <body>
     <div class="language-container">
         <h1>Choose Language / Выберите язык</h1>
-        <a href="/?lang=en" class="language-button">English</a>
-        <a href="/?lang=ru" class="language-button">Русский</a>
+        <a href="{{ url_for('set_language', lang='en') }}" class="language-button">English</a>
+        <a href="{{ url_for('set_language', lang='ru') }}" class="language-button">Русский</a>
     </div>
 </body>
 </html>
